@@ -1,6 +1,7 @@
 function setup() {
-    createCanvas(800,800);
+    createCanvas(495,495).parent("sketch-holder");
     noLoop();
+    background(255, 0, 200);
 }
 
 function generateTestData(x,y) {
@@ -18,7 +19,7 @@ function generateTestData(x,y) {
     return test_data;
 }
 
-var test_data = generateTestData(50,50);
+var test_data = generateTestData(33,33);
 
 function draw() {
     var c = color(255,204,0);

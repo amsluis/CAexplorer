@@ -1,11 +1,10 @@
 html, body {
-    height: 90%;
+    height: 100%;
 }
 
-body {
+#sketch-holder {
     margin: 0;
     display: flex;
 
     justify-content: center;
-    align-items: center;
 }
