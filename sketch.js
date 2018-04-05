@@ -1,11 +1,21 @@
+var species = 120;
+var xDimension = 300;
+var yDimension = 300;
+var gridSize = 2;
+var rules = ["111", "110", "101", "100", "011", "010", "001", "000"];
+
 function setup() {
-    createCanvas(495,495).parent("sketch-holder");
+    createCanvas(xDimension * gridSize, yDimension * gridSize).parent(
+            "sketch-holder");
     noLoop();
-    background(255, 0, 200);
+    speciesIn = createInput(120).parent("speciesIn");
+    xIn = createInput(80).parent("xIn");
+    yIn = createInput(80).parent("yIn");
+    sizeIn = createInput(10).parent("sizeIn");
 }
 
 function generateTestData(x,y) {
-    var test_data = [];
+    var testData = [];
     for (i = 0; i < x ; i++) {
         var row = [];
         for (j = 0; j < y ; j++) {
@@ -14,24 +24,44 @@ function generateTestData(x,y) {
             } else { row.push(0);
             }
         }
-        test_data.push(row);
+        testData.push(row);
     }
-    return test_data;
+    return testData;
 }
 
-var test_data = generateTestData(33,33);
+function generateCA(species) {
+    var output = [];
+    firstRow = generateFirstRow(species);
+}
+
+function readInputs() {
+    species = speciesIn.value();
+    xDimension = xIn.value();
+    yDimension = yIn.value();
+    gridSize = sizeIn.value();
+}
 
 function draw() {
     var c = color(255,204,0);
     var size = 15;
+    var testData = generateTestData(xDimension, yDimension);
+    background(255, 0, 200);
     fill(c);
     noStroke();
-    for (i = 0; i < test_data.length; i++) {
-        row = test_data[i];
+    for (i = 0; i < testData.length; i++) {
+        row = testData[i];
         for (j = 0; j < row.length; j++ ) {
             if (row[j]) {
-                rect(i * size, j * size, size, size);
+                rect(i * gridSize, j * gridSize, gridSize, gridSize);
             }
         }
+    }
+}
+
+function keyPressed() {
+    if (keyCode === ENTER) {
+        readInputs();
+        resizeCanvas(xDimension * gridSize, yDimension * gridSize);
+        redraw();
     }
 }
