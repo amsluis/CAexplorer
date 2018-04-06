@@ -1,3 +1,6 @@
+//TODO - buttons to randomize inputs, radio options
+//     - make pretty
+
 var species = 30;
 var xDimension = 11;
 var yDimension = 5;
@@ -6,13 +9,13 @@ var ruleSet = {}
 var rules = ["111", "110", "101", "100", "011", "010", "001", "000"];
 
 function setup() {
-    createCanvas(xDimension * gridSize, yDimension * gridSize).parent(
-            "sketch-holder");
-    noLoop();
     speciesIn = createInput(30).parent("speciesIn");
     xIn = createInput(11).parent("xIn");
     yIn = createInput(5).parent("yIn");
     sizeIn = createInput(15).parent("sizeIn");
+    createCanvas(xDimension * gridSize, yDimension * gridSize).parent(
+            "sketch-holder");
+    noLoop();
 }
 
 function generateTestData(x,y) {
@@ -42,12 +45,11 @@ function generateCA() {
 }
 
 function generateRules(species) {
+    var ruleSet = {};
     var binary = species.toString(2).split('');
-    while (binary.length < 8) {
+    while (binary.length < 8) {   //left pad to 8 digit binary number
         binary.unshift('0');
     }
-    console.log(binary);
-    var ruleSet = {};
     for (i = 0; i < binary.length; i++) {
         ruleSet[rules[i]] = binary[i];
     }
@@ -116,7 +118,7 @@ function keyPressed() {
     if (keyCode === ENTER) {
         readInputs();
         resizeCanvas(xDimension * gridSize, yDimension * gridSize);
-        generateRules();
+        generateRules(species);
         redraw();
     }
 }
