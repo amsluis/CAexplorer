@@ -10,8 +10,8 @@ function setup() {
             "sketch-holder");
     noLoop();
     speciesIn = createInput(30).parent("speciesIn");
-    xIn = createInput(41).parent("xIn");
-    yIn = createInput(20).parent("yIn");
+    xIn = createInput(11).parent("xIn");
+    yIn = createInput(5).parent("yIn");
     sizeIn = createInput(15).parent("sizeIn");
 }
 
@@ -80,6 +80,7 @@ function generateNextRow(lastRow) {
         } else {
             var context = [lastRow[i - 1], lastRow[i],
             lastRow[i + 1]].join('');
+            //debugger;
         }
         output.push(ruleSet[context]);
     }
@@ -87,7 +88,7 @@ function generateNextRow(lastRow) {
 }
 
 function readInputs() {
-    species = speciesIn.value();
+    species = parseInt(speciesIn.value());
     xDimension = xIn.value();
     yDimension = yIn.value();
     gridSize = sizeIn.value();
@@ -97,7 +98,7 @@ function draw() {
     var c = color(255,204,0);
     var size = 15;
     //var testData = generateTestData(xDimension, yDimension);
-    let testData = generateCA();
+    var testData = generateCA();
     background(255, 0, 200);
     fill(c);
     noStroke();
