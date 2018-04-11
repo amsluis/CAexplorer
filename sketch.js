@@ -1,17 +1,17 @@
 //TODO - buttons to randomize inputs, radio options
 //     - make pretty
 
-var species = 30;
-var xDimension = 11;
-var yDimension = 5;
+var species = 73;
+var xDimension = 61;
+var yDimension = 30;
 var gridSize = 15;
 var ruleSet = {}
 var rules = ["111", "110", "101", "100", "011", "010", "001", "000"];
 
 function setup() {
-    speciesIn = createInput(30).parent("speciesIn");
-    xIn = createInput(11).parent("xIn");
-    yIn = createInput(5).parent("yIn");
+    speciesIn = createInput(73).parent("speciesIn");
+    xIn = createInput(61).parent("xIn");
+    yIn = createInput(30).parent("yIn");
     sizeIn = createInput(15).parent("sizeIn");
     createCanvas(xDimension * gridSize, yDimension * gridSize).parent(
             "sketch-holder");
@@ -35,9 +35,8 @@ function generateTestData(x,y) {
 
 function generateCA() {
     ruleSet = generateRules(species);
-    var output = [];
+    let output = [];
     output.push(generateFirstRow(xDimension));
-    //let required so that 'i' isn't used/overwritten in function call
     for (let i = 0; i < yDimension - 1; i++) {
         output.push(generateNextRow(output[output.length - 1]));
     }
@@ -71,13 +70,14 @@ function generateFirstRow(width) {
 
 function generateNextRow(lastRow) {
     var output = [];
-    for (i = 0; i < lastRow.length; i++) {
+    let rowLength = lastRow.length
+    for (i = 0; i < rowLength; i++) {
         //mess because js doesn't do negative array indexes
         //and we're looping the space side to side
         if (i == 0) {
-            var context = [lastRow[lastRow.length - 1], lastRow[i],
+            var context = [lastRow[rowLength - 1], lastRow[i],
                 lastRow[i + 1]].join('');
-        } else if (i == lastRow.length - 1) {
+        } else if (i == rowLength - 1) {
             var context = [lastRow[i - 1], lastRow[i],lastRow[0]].join('');
         } else {
             var context = [lastRow[i - 1], lastRow[i],
@@ -97,16 +97,17 @@ function readInputs() {
 }
 
 function draw() {
-    var c = color(255,204,0);
-    var size = 15;
-    //var testData = generateTestData(xDimension, yDimension);
-    var testData = generateCA();
+    let c = color(255,204,0);
+    let size = 15;
+    let ca = generateCA();
+    let dataLength = ca.length;
     background(255, 0, 200);
     fill(c);
     noStroke();
-    for (i = 0; i < testData.length; i++) {
-        row = testData[i];
-        for (j = 0; j < row.length; j++ ) {
+    for (i = 0; i < dataLength; i++) {
+        let row = ca[i];
+        let rowLength = row.length;
+        for (j = 0; j < rowLength; j++ ) {
             if (row[j] == true) {
                 rect(j * gridSize, i * gridSize, gridSize, gridSize);
             }
