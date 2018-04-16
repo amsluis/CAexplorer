@@ -1,5 +1,6 @@
 //TODO - buttons to randomize inputs, radio options
 //     - make pretty
+//     - typed arrays for performance benefit?
 
 var species = 73;
 var xDimension = 61;
@@ -118,8 +119,8 @@ function draw() {
 function keyPressed() {
     if (keyCode === ENTER) {
         readInputs();
-        resizeCanvas(xDimension * gridSize, yDimension * gridSize);
         generateRules(species);
-        redraw();
+        resizeCanvas(xDimension * gridSize, yDimension * gridSize);
+        //redraw(); only run if resizeCanvas wasn't run
     }
 }
