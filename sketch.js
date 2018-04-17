@@ -83,7 +83,6 @@ function generateNextRow(lastRow) {
         } else {
             var context = [lastRow[i - 1], lastRow[i],
             lastRow[i + 1]].join('');
-            //debugger;
         }
         output.push(ruleSet[context]);
     }
@@ -91,10 +90,25 @@ function generateNextRow(lastRow) {
 }
 
 function readInputs() {
+    // p5.js redraw handling is strange, so check whether the canvas
+    // needs to be redrawn and call resizeCanvas or redraw, depending,
+    // to ensure you don't redraw twice.
+    let resize = false;
+    if (xDimension != xIn.value() ||
+        yDimension != yIn.value() ||
+        gridSize != sizeIn.value()) {
+        resize = true;
+    }
     species = parseInt(speciesIn.value());
     xDimension = xIn.value();
     yDimension = yIn.value();
     gridSize = sizeIn.value();
+    generateRules(species);
+    if (resize) {
+        resizeCanvas(xDimension * gridSize, yDimension * gridSize);
+    } else {
+        redraw();
+    }
 }
 
 function draw() {
@@ -119,8 +133,5 @@ function draw() {
 function keyPressed() {
     if (keyCode === ENTER) {
         readInputs();
-        generateRules(species);
-        resizeCanvas(xDimension * gridSize, yDimension * gridSize);
-        //redraw(); only run if resizeCanvas wasn't run
     }
 }
