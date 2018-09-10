@@ -2,36 +2,20 @@
 //     - make pretty
 //     - typed arrays for performance benefit?
 
-var species = 73;
+var species = 777;
 var xDimension = 61;
 var yDimension = 30;
 var gridSize = 15;
-var ruleSet = {}
-var rules = ["111", "110", "101", "100", "011", "010", "001", "000"];
+var ruleSet = []
 
 function setup() {
-    speciesIn = createInput(73).parent("speciesIn");
-    xIn = createInput(61).parent("xIn");
-    yIn = createInput(30).parent("yIn");
-    sizeIn = createInput(15).parent("sizeIn");
+    speciesIn = createInput(777).parent("speciesIn");
+    xIn = createInput(401).parent("xIn");
+    yIn = createInput(200).parent("yIn");
+    sizeIn = createInput(2).parent("sizeIn");
     createCanvas(xDimension * gridSize, yDimension * gridSize).parent(
             "sketch-holder");
     noLoop();
-}
-
-function generateTestData(x,y) {
-    var testData = [];
-    for (i = 0; i < x ; i++) {
-        var row = [];
-        for (j = 0; j < y ; j++) {
-            if (Math.random() > 0.5) {
-            row.push(1);
-            } else { row.push(0);
-            }
-        }
-        testData.push(row);
-    }
-    return testData;
 }
 
 function generateCA() {
@@ -45,15 +29,11 @@ function generateCA() {
 }
 
 function generateRules(species) {
-    var ruleSet = {};
-    var binary = species.toString(2).split('');
-    while (binary.length < 8) {   //left pad to 8 digit binary number
-        binary.unshift('0');
+    var trinary = species.toString(3).split('');
+    while (trinary.length < 7) {   //left pad to 7 digit binary number
+        trinary.unshift('0');
     }
-    for (i = 0; i < binary.length; i++) {
-        ruleSet[rules[i]] = binary[i];
-    }
-    return ruleSet;
+    return trinary;
 }
 
 function generateFirstRow(width) {
@@ -68,6 +48,19 @@ function generateFirstRow(width) {
     }
     return output;
 }
+/*
+function generateFirstRow(width) {
+    var output = [];
+    for (i = 0; i < width; i++) {
+        if (Math.random() >= 0.5) {
+            output.push('1');
+        } else {
+            output.push('0');
+        }
+    }
+    return output;
+}
+*/
 
 function generateNextRow(lastRow) {
     var output = [];
@@ -84,7 +77,14 @@ function generateNextRow(lastRow) {
             var context = [lastRow[i - 1], lastRow[i],
             lastRow[i + 1]].join('');
         }
-        output.push(ruleSet[context]);
+        var total = context.split('');
+        var total = total.map( function(n){
+            return parseInt(n, 10)
+        });
+        total = total.reduce( function(a,b){
+            return a+b
+        });
+        output.push(ruleSet[ruleSet.length - 1 - total]);
     }
     return output;
 }
@@ -112,18 +112,20 @@ function readInputs() {
 }
 
 function draw() {
-    let c = color(255,204,0);
+    let c = [0,color(255,204,0), color(51,224,165)];
     let size = 15;
     let ca = generateCA();
     let dataLength = ca.length;
     background(255, 0, 200);
-    fill(c);
     noStroke();
     for (i = 0; i < dataLength; i++) {
         let row = ca[i];
         let rowLength = row.length;
         for (j = 0; j < rowLength; j++ ) {
-            if (row[j] == true) {
+            if (row[j] != '0') {
+                var clr = parseInt(row[j]);
+                debugger;
+                fill(c[parseInt(row[j])]);
                 rect(j * gridSize, i * gridSize, gridSize, gridSize);
             }
         }

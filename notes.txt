@@ -1,0 +1,15 @@
+Initial Conditions
+* Single center seed
+* Random (with variable threshold)
+* Sparse
+ - no adjacent live cells (i.e. for ECA73)
+ - control overall density
+* Higher-order structure
+ - density of live cells varies, more dense near center
+ - arithmetic sequences
+
+
+CA modes
+* Elementary CAs
+* Totalistic
+* Outer Totalistic
