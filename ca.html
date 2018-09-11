@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="p5.min.js"></script>
     <script src="p5.dom.min.js"></script>
-    <script src=sketch.js></script>
+    <script src="sketch.js" defer></script>
     <title>Cellula Automata Explorer</title>
   </head>
   <body>
@@ -13,19 +13,32 @@
   <table>
     <tr>
       <td> Species </td>
-      <td id='speciesIn'></td>
+      <td><input type='text' id='speciesIn' value=777></td>
+      <td> <button type='button' id='inc'>Increment</button> </td>
     </tr>
     <tr>
         <td> Width </td>
-        <td id='xIn'></td>
+        <td> <input type='text' id='xIn' value=81></td>
     </tr>
     <tr>
         <td> Height </td>
-        <td id='yIn'></td>
+        <td><input type='text' id='yIn' value=40></td>
     </tr>
     <tr>
         <td> Cell size </td>
-        <td id='sizeIn'></td>
+        <td><input type='text' id='sizeIn' value=7></td>
+    </tr>
+    <tr>
+      <td> Background:  </td>
+      <td><input type="color" id="background" value="#dddddd"></td>
+    </tr>
+    <tr>
+      <td> Color 1: </td>
+      <td> <input type="color" id="color1" value="#5e8ae2"> </td>
+    </tr>
+    <tr>
+      <td> Color 2: </td>
+      <td> <input type="color" id="color2" value="#fed217"> </td>
     </tr>
   </table>
   <div id="sketch-holder">

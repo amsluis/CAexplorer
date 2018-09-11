@@ -2,33 +2,41 @@
 //     - make pretty
 //     - typed arrays for performance benefit?
 
-var species = 777;
-var xDimension = 61;
-var yDimension = 30;
-var gridSize = 15;
-var ruleSet = []
+// TODO refactor inputs to use DOM elements, make onclick also regenerate CA
+var ruleSet = [];
+var species = document.getElementById('speciesIn');
+var xDimension = document.getElementById('xIn');
+var yDimension = document.getElementById('yIn');
+var gridSize = document.getElementById('sizeIn');
+var bkgrnd = document.getElementById('background');
+var color1 = document.getElementById('color1');
+var color2 = document.getElementById('color2');
+var sizeCheck = [xDimension.value, yDimension.value, gridSize.value];
+document.getElementById('inc').onclick = function(){
+    newValue = parseInt(species.value) + 1;
+    document.getElementById('speciesIn').value = newValue.toString();
+    redraw();
+}
+
 
 function setup() {
-    speciesIn = createInput(777).parent("speciesIn");
-    xIn = createInput(401).parent("xIn");
-    yIn = createInput(200).parent("yIn");
-    sizeIn = createInput(2).parent("sizeIn");
-    createCanvas(xDimension * gridSize, yDimension * gridSize).parent(
+    createCanvas(xDimension.value * gridSize.value, yDimension.value * gridSize.value).parent(
             "sketch-holder");
     noLoop();
 }
 
 function generateCA() {
-    ruleSet = generateRules(species);
+    ruleSet = generateRules(species.value);
     let output = [];
-    output.push(generateFirstRow(xDimension));
-    for (let i = 0; i < yDimension - 1; i++) {
+    output.push(generateFirstRow(xDimension.value));
+    for (let i = 0; i < yDimension.value - 1; i++) {
         output.push(generateNextRow(output[output.length - 1]));
     }
     return output;
 }
 
 function generateRules(species) {
+    species = parseInt(species);
     var trinary = species.toString(3).split('');
     while (trinary.length < 7) {   //left pad to 7 digit binary number
         trinary.unshift('0');
@@ -48,6 +56,7 @@ function generateFirstRow(width) {
     }
     return output;
 }
+
 /*
 function generateFirstRow(width) {
     var output = [];
@@ -89,34 +98,33 @@ function generateNextRow(lastRow) {
     return output;
 }
 
-function readInputs() {
+function reSizeCheck() {
     // p5.js redraw handling is strange, so check whether the canvas
     // needs to be redrawn and call resizeCanvas or redraw, depending,
     // to ensure you don't redraw twice.
     let resize = false;
-    if (xDimension != xIn.value() ||
-        yDimension != yIn.value() ||
-        gridSize != sizeIn.value()) {
+    if (xDimension.value != sizeCheck[0] ||
+        yDimension.value != sizeCheck[1] ||
+        gridSize.value != sizeCheck[2]) {
         resize = true;
+        sizeCheck[0] = xDimension.value;
+        sizeCheck[1] = yDimension.value;
+        sizeCheck[2] = gridSize.value;
     }
-    species = parseInt(speciesIn.value());
-    xDimension = xIn.value();
-    yDimension = yIn.value();
-    gridSize = sizeIn.value();
-    generateRules(species);
     if (resize) {
-        resizeCanvas(xDimension * gridSize, yDimension * gridSize);
+        resizeCanvas(xDimension.value * gridSize.value, yDimension.value * gridSize.value);
     } else {
         redraw();
     }
 }
 
 function draw() {
-    let c = [0,color(255,204,0), color(51,224,165)];
-    let size = 15;
+    let c = [bkgrnd.value, color1.value, color2.value];
+    let size = gridSize.value
     let ca = generateCA();
     let dataLength = ca.length;
-    background(255, 0, 200);
+    let grid = gridSize.value;
+    background(c[0]);
     noStroke();
     for (i = 0; i < dataLength; i++) {
         let row = ca[i];
@@ -124,9 +132,8 @@ function draw() {
         for (j = 0; j < rowLength; j++ ) {
             if (row[j] != '0') {
                 var clr = parseInt(row[j]);
-                debugger;
                 fill(c[parseInt(row[j])]);
-                rect(j * gridSize, i * gridSize, gridSize, gridSize);
+                rect(j * grid, i * grid, grid, grid);
             }
         }
     }
@@ -134,6 +141,6 @@ function draw() {
 
 function keyPressed() {
     if (keyCode === ENTER) {
-        readInputs();
+        reSizeCheck();
     }
 }
