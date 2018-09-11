@@ -11,6 +11,7 @@ var gridSize = document.getElementById('sizeIn');
 var bkgrnd = document.getElementById('background');
 var color1 = document.getElementById('color1');
 var color2 = document.getElementById('color2');
+var caType = document.querySelector('input[name="caType"]:checked');
 var sizeCheck = [xDimension.value, yDimension.value, gridSize.value];
 document.getElementById('inc').onclick = function(){
     newValue = parseInt(species.value) + 1;
@@ -25,7 +26,8 @@ function setup() {
     noLoop();
 }
 
-function generateCA() {
+function generateCA(caType) {
+    console.log(caType);
     ruleSet = generateRules(species.value);
     let output = [];
     output.push(generateFirstRow(xDimension.value));
@@ -121,7 +123,7 @@ function reSizeCheck() {
 function draw() {
     let c = [bkgrnd.value, color1.value, color2.value];
     let size = gridSize.value
-    let ca = generateCA();
+    let ca = generateCA(caType.value);
     let dataLength = ca.length;
     let grid = gridSize.value;
     background(c[0]);
