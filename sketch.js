@@ -30,7 +30,7 @@ function setup() {
     noLoop();
 }
 
-function generateCA(caType) {
+function generateCA() {
     ruleSet = generateRules(species.value);
     let output = [];
     output.push(generateFirstRow(xDimension.value));
@@ -125,8 +125,7 @@ function reSizeCheck() {
 
 function draw() {
     let c = [bkgrnd.value, color1.value, color2.value];
-    let size = gridSize.value
-    let ca = generateCA(caType.value);
+    let ca = generateCA();
     let dataLength = ca.length;
     let grid = gridSize.value;
     background(c[0]);
@@ -136,7 +135,6 @@ function draw() {
         let rowLength = row.length;
         for (j = 0; j < rowLength; j++ ) {
             if (row[j] != '0') {
-                var clr = parseInt(row[j]);
                 fill(c[parseInt(row[j])]);
                 rect(j * grid, i * grid, grid, grid);
             }
@@ -148,4 +146,22 @@ function keyPressed() {
     if (keyCode === ENTER) {
         reSizeCheck();
     }
+}
+
+function keyPressed() {
+    if (keyCode === 80) {
+        performanceTest();
+    }
+}
+
+function performanceTest() {
+    let t0 = performance.now();
+    for (var i = 16; i <= 116; i++) {
+        xDimension.value = 201;
+        yDimension.value = 100;
+        species.value = i;
+        generateCA();
+    };
+    let t1 = performance.now();
+    console.log("Test took: " + (t1 - t0)/1000 + " seconds");
 }
