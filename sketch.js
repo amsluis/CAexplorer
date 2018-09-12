@@ -1,8 +1,6 @@
 //TODO - buttons to randomize inputs, radio options
 //     - make pretty
 //     - typed arrays for performance benefit?
-
-// TODO refactor inputs to use DOM elements, make onclick also regenerate CA
 var ruleSet = [];
 var species = document.getElementById('speciesIn');
 var xDimension = document.getElementById('xIn');
@@ -18,6 +16,11 @@ document.getElementById('inc').onclick = function(){
     document.getElementById('speciesIn').value = newValue.toString();
     redraw();
 }
+document.getElementById('dec').onclick = function(){
+    newValue = parseInt(species.value) - 1;
+    document.getElementById('speciesIn').value = newValue.toString();
+    redraw();
+}
 
 
 function setup() {
@@ -27,7 +30,6 @@ function setup() {
 }
 
 function generateCA(caType) {
-    console.log(caType);
     ruleSet = generateRules(species.value);
     let output = [];
     output.push(generateFirstRow(xDimension.value));
