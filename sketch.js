@@ -9,8 +9,9 @@ var gridSize = document.getElementById('sizeIn');
 var bkgrnd = document.getElementById('background');
 var color1 = document.getElementById('color1');
 var color2 = document.getElementById('color2');
-var caType = document.querySelector('input[name="caType"]:checked');
 var sizeCheck = [xDimension.value, yDimension.value, gridSize.value];
+function caType() {return document.querySelector('input[name="caType"]:checked').value};
+function startCond() {return document.querySelector('input[name="startCond"]:checked').value};
 document.getElementById('inc').onclick = function(){
     newValue = parseInt(species.value) + 1;
     document.getElementById('speciesIn').value = newValue.toString();
