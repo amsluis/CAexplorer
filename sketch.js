@@ -52,11 +52,21 @@ function generateRules(species) {
 function generateFirstRow(width) {
     var output = [];
     var center = Math.floor(width/2);
-    for (i = 0; i < width; i++) {
-        if (i == center) {
-            output.push('1');
-        } else {
-            output.push('0');
+    if (startCond() == 'random'){
+        for (i =0; i< width; i++) {
+            if (Math.random() >= 0.5) {
+                output.push('1');
+            } else {
+                output.push('0');
+            }
+        }
+    } else {
+        for (i = 0; i < width; i++) {
+            if (i == center) {
+                output.push('1');
+            } else {
+                output.push('0');
+            }
         }
     }
     return output;
@@ -121,7 +131,7 @@ function reSizeCheck() {
     } else {
         redraw();
     }
-}
+};
 
 function draw() {
     let c = [bkgrnd.value, color1.value, color2.value];
@@ -140,19 +150,16 @@ function draw() {
             }
         }
     }
-}
+};
 
 function keyPressed() {
     if (keyCode === ENTER) {
         reSizeCheck();
-    }
-}
-
-function keyPressed() {
+    };
     if (keyCode === 80) {
         performanceTest();
-    }
-}
+    };
+};
 
 function performanceTest() {
     let t0 = performance.now();
