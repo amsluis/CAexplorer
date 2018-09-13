@@ -1,8 +1,9 @@
-//TODO - buttons to randomize inputs, radio options
-//     - make pretty
 //     - typed arrays for performance benefit?
+//     - limit species input to valid range for r (neighborhood) and n (colors)
 var ruleSet = [];
 var species = document.getElementById('speciesIn');
+var nbh = document.getElementById('neighborhood');
+var numColors = document.getElementById('colors');
 var xDimension = document.getElementById('xIn');
 var yDimension = document.getElementById('yIn');
 var gridSize = document.getElementById('sizeIn');
@@ -40,6 +41,7 @@ function generateCA() {
     return output;
 }
 
+/*
 function generateRules(species) {
     species = parseInt(species);
     var trinary = species.toString(3).split('');
@@ -47,6 +49,31 @@ function generateRules(species) {
         trinary.unshift('0');
     }
     return trinary;
+}
+*/
+
+function generateRules(species) {
+    let rules = {}
+    species = parseInt(species);
+    r = (nbh.value * 2) + 1;
+    n = parseInt(numColors.value);
+    // reverse to make order little endian
+    console.log(species);
+    console.log(r,n);
+    if (caType() == 'elementary') {
+        species = species.toString(n).padStart(Math.pow(n,r),'0').split('').reverse();
+        for (i = 0; i < Math.pow(n,r); i++) {
+            rule = i.toString(n).padStart(r, '0');
+            rules[rule] = species[i];
+        }
+    } else if (caType() == 'totalistic') {
+        species = species.toString(n).padStart(r*(n-1)).split('').reverse();
+        for (i = 0; i < (r*(n-1)+1); i++) {
+            rules[i] = species[i];
+        }
+    }
+    console.log(rules);
+    return rules;
 }
 
 function generateFirstRow(width) {
@@ -71,20 +98,6 @@ function generateFirstRow(width) {
     }
     return output;
 }
-
-/*
-function generateFirstRow(width) {
-    var output = [];
-    for (i = 0; i < width; i++) {
-        if (Math.random() >= 0.5) {
-            output.push('1');
-        } else {
-            output.push('0');
-        }
-    }
-    return output;
-}
-*/
 
 function generateNextRow(lastRow) {
     var output = [];
