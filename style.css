@@ -8,3 +8,10 @@ html, body {
 
     justify-content: center;
 }
+
+.input {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 0px 0px 15px 0px;
+}

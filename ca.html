@@ -10,46 +10,53 @@
   <h1>Cellular Automata Explorer</h1>
   <!--  Make this a table, with randomize buttons and divs to
   attatch input fields-->
-  <table>
-    <tr>
-      <td>Elementary<input type='radio' name='caType' value='elementary'></td>
-      <td>Totalistic<input type='radio' name='caType' value='totalistic' checked='checked'></td>
-    </tr>
-    <tr>
-      <td>Point<input type='radio' name='startCond' value='point' checked='checked'></td>
-      <td>Random<input type='radio' name='startCond' value='random'</td>
-    </tr>
-    <tr>
-      <td> Species </td>
-      <td><input type='text' id='speciesIn' value=777></td>
-      <td> <button type='button' id='inc'>Increment</button> </td>
-      <td> <button type='button' id='dec'>Decrement</button> </td>
-    </tr>
-    <tr>
-        <td> Width </td>
-        <td> <input type='text' id='xIn' value=81></td>
-    </tr>
-    <tr>
-        <td> Height </td>
-        <td><input type='text' id='yIn' value=40></td>
-    </tr>
-    <tr>
-        <td> Cell size </td>
-        <td><input type='text' id='sizeIn' value=7></td>
-    </tr>
-    <tr>
-      <td> Background:  </td>
-      <td><input type="color" id="background" value="#dddddd"></td>
-    </tr>
-    <tr>
-      <td> Color 1: </td>
-      <td> <input type="color" id="color1" value="#5e8ae2"> </td>
-    </tr>
-    <tr>
-      <td> Color 2: </td>
-      <td> <input type="color" id="color2" value="#fed217"> </td>
-    </tr>
-  </table>
+  <div class="input">
+    <table id='inputs'>
+      <tr>
+        <td>Elementary<input type='radio' name='caType' value='elementary'></td>
+        <td>Totalistic<input type='radio' name='caType' value='totalistic' checked='checked'></td>
+      </tr>
+      <tr>
+        <td>Point<input type='radio' name='startCond' value='point' checked='checked'></td>
+        <td>Random<input type='radio' name='startCond' value='random'</td>
+      </tr>
+      <tr>
+        <td> Species </td>
+        <td><input type='text' id='speciesIn' value=777></td>
+        <td> <button type='button' id='inc'>Increment</button> </td>
+        <td> <button type='button' id='dec'>Decrement</button> </td>
+      </tr>
+      <tr>
+        <td>Neighborhood</td>
+        <td><input type='text' id='neighborhood' value=1></td>
+      <tr>
+          <td> Width </td>
+          <td> <input type='text' id='xIn' value=81></td>
+      </tr>
+      <tr>
+          <td> Height </td>
+          <td><input type='text' id='yIn' value=40></td>
+      </tr>
+      <tr>
+          <td> Cell size </td>
+          <td><input type='text' id='sizeIn' value=7></td>
+      </tr>
+    </table>
+    <table id='colors'>
+      <tr>
+        <td> Background:  </td>
+        <td><input type="color" id="background" value="#dddddd"></td>
+      </tr>
+      <tr>
+        <td> Color 1: </td>
+        <td> <input type="color" id="color1" value="#5e8ae2"> </td>
+      </tr>
+      <tr>
+        <td> Color 2: </td>
+        <td> <input type="color" id="color2" value="#fed217"> </td>
+      </tr>
+    </table>
+  </div>
   <div id="sketch-holder">
   </div>
   </body>
