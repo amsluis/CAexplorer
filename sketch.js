@@ -42,15 +42,15 @@ function generateCA() {
 }
 
 /*
-function generateRules(species) {
-    species = parseInt(species);
-    var trinary = species.toString(3).split('');
-    while (trinary.length < 7) {   //left pad to 7 digit binary number
-        trinary.unshift('0');
-    }
-    return trinary;
-}
-*/
+   function generateRules(species) {
+   species = parseInt(species);
+   var trinary = species.toString(3).split('');
+   while (trinary.length < 7) {   //left pad to 7 digit binary number
+   trinary.unshift('0');
+   }
+   return trinary;
+   }
+   */
 
 function generateRules(species) {
     let rules = {}
@@ -58,8 +58,6 @@ function generateRules(species) {
     r = (nbh.value * 2) + 1;
     n = parseInt(numColors.value);
     // reverse to make order little endian
-    console.log(species);
-    console.log(r,n);
     if (caType() == 'elementary') {
         species = species.toString(n).padStart(Math.pow(n,r),'0').split('').reverse();
         for (i = 0; i < Math.pow(n,r); i++) {
@@ -67,12 +65,11 @@ function generateRules(species) {
             rules[rule] = species[i];
         }
     } else if (caType() == 'totalistic') {
-        species = species.toString(n).padStart(r*(n-1)).split('').reverse();
+        species = species.toString(n).padStart(r*(n-1)+1,'0').split('').reverse();
         for (i = 0; i < (r*(n-1)+1); i++) {
             rules[i] = species[i];
         }
     }
-    console.log(rules);
     return rules;
 }
 
@@ -100,31 +97,58 @@ function generateFirstRow(width) {
 }
 
 function generateNextRow(lastRow) {
+    var newRow = [];
+    let rowLength = lastRow.length;
+    let r = nbh.value*2 + 1;
+    let row = lastRow.slice();
+    // Pad row with neighborhood range elements from ends to loop x axis
+    for (i = 0; i < nbh.value; i++) {
+        row.unshift(row[rowLength - 1]);
+        row.push(row[i+1]);
+    }
+    if (caType() == 'elementary') {
+        for (i = 0; i < rowLength; i++) {
+            let neighborhood = row.slice(i,i+r).join('');
+            newRow.push(ruleSet[neighborhood]);
+        }
+    } else if (caType() == 'totalistic') {
+        for (i = 0; i < rowLength; i++) {
+            let neighborhood = row.slice(i,i+r);
+            neighborhood = neighborhood.reduce(function(acc, val) { return acc + parseInt(val); }, 0);
+            newRow.push(ruleSet[neighborhood]);
+        }
+    }
+    return newRow;
+}
+
+/*
+function generateNextRow(lastRow) {
     var output = [];
     let rowLength = lastRow.length
-    for (i = 0; i < rowLength; i++) {
-        //mess because js doesn't do negative array indexes
-        //and we're looping the space side to side
-        if (i == 0) {
-            var context = [lastRow[rowLength - 1], lastRow[i],
-                lastRow[i + 1]].join('');
-        } else if (i == rowLength - 1) {
-            var context = [lastRow[i - 1], lastRow[i],lastRow[0]].join('');
-        } else {
-            var context = [lastRow[i - 1], lastRow[i],
-            lastRow[i + 1]].join('');
+        for (i = 0; i < rowLength; i++) {
+            //mess because js doesn't do negative array indexes
+            //and we're looping the space side to side
+            if (i == 0) {
+                var context = [lastRow[rowLength - 1], lastRow[i],
+                    lastRow[i + 1]].join('');
+            } else if (i == rowLength - 1) {
+                var context = [lastRow[i - 1], lastRow[i],lastRow[0]].join('');
+            } else {
+                var context = [lastRow[i - 1], lastRow[i],
+                    lastRow[i + 1]].join('');
+            }
+            var total = context.split('');
+            var total = total.map( function(n){
+                return parseInt(n, 10)
+            });
+            total = total.reduce( function(a,b){
+                return a+b
+            });
+            output.push(ruleSet[ruleSet.length - 1 - total]);
         }
-        var total = context.split('');
-        var total = total.map( function(n){
-            return parseInt(n, 10)
-        });
-        total = total.reduce( function(a,b){
-            return a+b
-        });
-        output.push(ruleSet[ruleSet.length - 1 - total]);
-    }
     return output;
 }
+*/
 
 function reSizeCheck() {
     // p5.js redraw handling is strange, so check whether the canvas
@@ -132,8 +156,8 @@ function reSizeCheck() {
     // to ensure you don't redraw twice.
     let resize = false;
     if (xDimension.value != sizeCheck[0] ||
-        yDimension.value != sizeCheck[1] ||
-        gridSize.value != sizeCheck[2]) {
+            yDimension.value != sizeCheck[1] ||
+            gridSize.value != sizeCheck[2]) {
         resize = true;
         sizeCheck[0] = xDimension.value;
         sizeCheck[1] = yDimension.value;
