@@ -2,6 +2,16 @@ html, body {
     height: 100%;
 }
 
+h1 {
+    display: flex;
+    justify-content: center;
+}
+
+#range {
+    display: flex;
+    justify-content: center;
+}
+
 #sketch-holder {
     margin: 0;
     display: flex;

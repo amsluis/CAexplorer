@@ -1,5 +1,7 @@
 //     - typed arrays for performance benefit?
 //     - limit species input to valid range for r (neighborhood) and n (colors)
+//
+//     TODO - wrapping isn't working correctly, at least for r=2 neighborhood
 var ruleSet = [];
 var species = document.getElementById('speciesIn');
 var nbh = document.getElementById('neighborhood');
@@ -13,16 +15,12 @@ var color2 = document.getElementById('color2');
 var sizeCheck = [xDimension.value, yDimension.value, gridSize.value];
 function caType() {return document.querySelector('input[name="caType"]:checked').value};
 function startCond() {return document.querySelector('input[name="startCond"]:checked').value};
-document.getElementById('inc').onclick = function(){
-    newValue = parseInt(species.value) + 1;
-    document.getElementById('speciesIn').value = newValue.toString();
-    redraw();
-}
-document.getElementById('dec').onclick = function(){
-    newValue = parseInt(species.value) - 1;
-    document.getElementById('speciesIn').value = newValue.toString();
-    redraw();
-}
+document.getElementById('inc').onclick = function() {changeSpecies(1)};
+document.getElementById('inc10').onclick = function() {changeSpecies(10)};
+document.getElementById('inc100').onclick = function() {changeSpecies(100)};
+document.getElementById('dec').onclick = function() {changeSpecies(-1)};
+document.getElementById('dec10').onclick = function() {changeSpecies(-10)};
+document.getElementById('dec100').onclick = function() {changeSpecies(-100)};
 
 
 function setup() {
@@ -41,17 +39,6 @@ function generateCA() {
     return output;
 }
 
-/*
-   function generateRules(species) {
-   species = parseInt(species);
-   var trinary = species.toString(3).split('');
-   while (trinary.length < 7) {   //left pad to 7 digit binary number
-   trinary.unshift('0');
-   }
-   return trinary;
-   }
-   */
-
 function generateRules(species) {
     let rules = {}
     species = parseInt(species);
@@ -59,12 +46,14 @@ function generateRules(species) {
     n = parseInt(numColors.value);
     // reverse to make order little endian
     if (caType() == 'elementary') {
+        document.getElementById('max').innerHTML = Math.pow(n,(Math.pow(n,r))).toString();
         species = species.toString(n).padStart(Math.pow(n,r),'0').split('').reverse();
         for (i = 0; i < Math.pow(n,r); i++) {
             rule = i.toString(n).padStart(r, '0');
             rules[rule] = species[i];
         }
     } else if (caType() == 'totalistic') {
+        document.getElementById('max').innerHTML = Math.pow(n, ((n-1)*r+1));
         species = species.toString(n).padStart(r*(n-1)+1,'0').split('').reverse();
         for (i = 0; i < (r*(n-1)+1); i++) {
             rules[i] = species[i];
@@ -104,7 +93,7 @@ function generateNextRow(lastRow) {
     // Pad row with neighborhood range elements from ends to loop x axis
     for (i = 0; i < nbh.value; i++) {
         row.unshift(row[rowLength - 1]);
-        row.push(row[i+1]);
+        row.push(row[i*2+1]);
     }
     if (caType() == 'elementary') {
         for (i = 0; i < rowLength; i++) {
@@ -120,35 +109,6 @@ function generateNextRow(lastRow) {
     }
     return newRow;
 }
-
-/*
-function generateNextRow(lastRow) {
-    var output = [];
-    let rowLength = lastRow.length
-        for (i = 0; i < rowLength; i++) {
-            //mess because js doesn't do negative array indexes
-            //and we're looping the space side to side
-            if (i == 0) {
-                var context = [lastRow[rowLength - 1], lastRow[i],
-                    lastRow[i + 1]].join('');
-            } else if (i == rowLength - 1) {
-                var context = [lastRow[i - 1], lastRow[i],lastRow[0]].join('');
-            } else {
-                var context = [lastRow[i - 1], lastRow[i],
-                    lastRow[i + 1]].join('');
-            }
-            var total = context.split('');
-            var total = total.map( function(n){
-                return parseInt(n, 10)
-            });
-            total = total.reduce( function(a,b){
-                return a+b
-            });
-            output.push(ruleSet[ruleSet.length - 1 - total]);
-        }
-    return output;
-}
-*/
 
 function reSizeCheck() {
     // p5.js redraw handling is strange, so check whether the canvas
@@ -189,12 +149,22 @@ function draw() {
     }
 };
 
+
+function changeSpecies(amount) {
+    newValue = parseInt(species.value) + amount;
+    document.getElementById('speciesIn').value = newValue.toString();
+    redraw();
+}
+
 function keyPressed() {
     if (keyCode === ENTER) {
         reSizeCheck();
-    };
-    if (keyCode === 80) {
+    } else if (keyCode === 80) {
         performanceTest();
+    } else if (keyCode === 37) {
+        changeSpecies(-1);
+    } else if (keyCode === 39) {
+        changeSpecies(1);
     };
 };
 

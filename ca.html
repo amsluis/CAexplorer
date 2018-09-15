@@ -23,30 +23,45 @@
       <tr>
         <td> Species </td>
         <td><input type='text' id='speciesIn' value=30></td>
-        <td> <button type='button' id='inc'>Increment</button> </td>
-        <td> <button type='button' id='dec'>Decrement</button> </td>
       </tr>
       <tr>
         <td>Neighborhood</td>
-        <td><input type='text' id='neighborhood' value=1></td>
+        <td><input type='text' id='neighborhood' value=2></td>
       </tr>
       <tr>
         <td># of colors</td>
-        <td><input type='text' id='colors' value=2></td>
+        <td><input type='text' id='colors' value=3></td>
+      </tr>
+    </table>
+    <table>
+      <tr>
+        <td><button type='button' id='inc'>+1</button></td>
+        <td><button type='button' id='inc10'>+10</button></td>
+        <td><button type='button' id='inc100'>+100</button></td>
+      </tr>
+      <tr>
+        <td><button type='button' id='dec'>-1</button></td>
+        <td><button type='button' id='dec10'>-10</button></td>
+        <td><button type='button' id='dec100'>-100</button></td>
       </tr>
     </table>
     <table>
       <tr>
         <td> Width </td>
-        <td> <input type='text' id='xIn' value=9></td>
+        <td> <input type='text' id='xIn' value=151></td>
       </tr>
       <tr>
         <td> Height </td>
-        <td><input type='text' id='yIn' value=5></td>
+        <td><input type='text' id='yIn' value=76></td>
       </tr>
       <tr>
         <td> Cell size </td>
-        <td><input type='text' id='sizeIn' value=7></td>
+        <td><input type='text' id='sizeIn' value=5></td>
+      </tr>
+      <tr>
+        <td><button type='button' id='small'>Small</button></td>
+        <td><button type='button' id='medium'>Medium</button></td>
+        <td><button type='button' id='large'>Large</button></td>
       </tr>
     </table>
     <table id='colors'>
@@ -62,6 +77,11 @@
         <td> Color 2: </td>
         <td> <input type="color" id="color2" value="#fed217"> </td>
       </tr>
+    </table>
+  </div>
+  <div id='range'>
+    <table>
+      <td>Species Range: 0 - <span id='max'></span></td>
     </table>
   </div>
   <div id="sketch-holder">

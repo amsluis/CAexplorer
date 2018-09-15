@@ -13,3 +13,9 @@ CA modes
 * Elementary CAs
 * Totalistic
 * Outer Totalistic
+
+{3 neighborhood totalistic CA} of note
+- 92,96,100,
+
+5n 3k 128791 totalistic - crazy patterns
+      128817
