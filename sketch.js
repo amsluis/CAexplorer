@@ -1,7 +1,4 @@
 //     - typed arrays for performance benefit?
-//     - limit species input to valid range for r (neighborhood) and n (colors)
-//
-//     TODO - wrapping isn't working correctly, at least for r=2 neighborhood
 var ruleSet = [];
 var species = document.getElementById('speciesIn');
 var nbh = document.getElementById('neighborhood');
@@ -12,6 +9,7 @@ var gridSize = document.getElementById('sizeIn');
 var bkgrnd = document.getElementById('background');
 var color1 = document.getElementById('color1');
 var color2 = document.getElementById('color2');
+var color3 = document.getElementById('color3');
 var sizeCheck = [xDimension.value, yDimension.value, gridSize.value];
 function caType() {return document.querySelector('input[name="caType"]:checked').value};
 function startCond() {return document.querySelector('input[name="startCond"]:checked').value};
@@ -21,7 +19,9 @@ document.getElementById('inc100').onclick = function() {changeSpecies(100)};
 document.getElementById('dec').onclick = function() {changeSpecies(-1)};
 document.getElementById('dec10').onclick = function() {changeSpecies(-10)};
 document.getElementById('dec100').onclick = function() {changeSpecies(-100)};
-
+document.getElementById('small').onclick = function() {reSize(31,15,8)};
+document.getElementById('medium').onclick = function() {reSize(151,75,5)};
+document.getElementById('large').onclick = function() {reSize(401,200,3)};
 
 function setup() {
     createCanvas(xDimension.value * gridSize.value, yDimension.value * gridSize.value).parent(
@@ -131,7 +131,7 @@ function reSizeCheck() {
 };
 
 function draw() {
-    let c = [bkgrnd.value, color1.value, color2.value];
+    let c = [bkgrnd.value, color1.value, color2.value, color3.value, "#123456", "#871381"];
     let ca = generateCA();
     let dataLength = ca.length;
     let grid = gridSize.value;
@@ -154,6 +154,13 @@ function changeSpecies(amount) {
     newValue = parseInt(species.value) + amount;
     document.getElementById('speciesIn').value = newValue.toString();
     redraw();
+}
+
+function reSize(w, h, g) {
+    xDimension.value = w;
+    yDimension.value = h;
+    gridSize.value = g;
+    reSizeCheck();
 }
 
 function keyPressed() {
