@@ -1,8 +1,13 @@
-//     - typed arrays for performance benefit?
+// mandala rendering along cardinal directions
+// color palette selection
+// remove p5
+// multiple renders - intial conditions, species increments, etc.
+// Use browserify to modularize code
+// Use JSHint to standardize code
 var ruleSet = [];
 var species = document.getElementById('speciesIn');
 var nbh = document.getElementById('neighborhood');
-var numColors = document.getElementById('colors');
+var numColors = document.getElementById('numColors');
 var xDimension = document.getElementById('xIn');
 var yDimension = document.getElementById('yIn');
 var gridSize = document.getElementById('sizeIn');
@@ -10,6 +15,9 @@ var bkgrnd = document.getElementById('background');
 var color1 = document.getElementById('color1');
 var color2 = document.getElementById('color2');
 var color3 = document.getElementById('color3');
+//var colorList = ['#eeeeee','#5e8ae2','#fed217','#222222','#123456','#871381','#8c1292']
+//var colorList = ['#ffffff', '#dddddd', '#bbbbbb', '#999999', '#777777', '#555555', '#333333', '#111111', '#000000'];
+var colorList = ['#FEFFFE', '#BFD7EA', '#0B3954', '#E0FF4F', '#FF6663', '#5CA4A9', '#F4F1BB']
 var sizeCheck = [xDimension.value, yDimension.value, gridSize.value];
 function caType() {return document.querySelector('input[name="caType"]:checked').value};
 function startCond() {return document.querySelector('input[name="startCond"]:checked').value};
@@ -22,11 +30,15 @@ document.getElementById('dec100').onclick = function() {changeSpecies(-100)};
 document.getElementById('small').onclick = function() {reSize(31,15,8)};
 document.getElementById('medium').onclick = function() {reSize(151,75,5)};
 document.getElementById('large').onclick = function() {reSize(401,200,3)};
+document.getElementById('numColors').onchange = function() {createColorTable()};
+
+
 
 function setup() {
-    createCanvas(xDimension.value * gridSize.value, yDimension.value * gridSize.value).parent(
-            "sketch-holder");
+    createCanvas(xDimension.value * gridSize.value,
+                 yDimension.value * gridSize.value).parent("sketch-holder");
     noLoop();
+    createColorTable();
 }
 
 function generateCA() {
@@ -131,18 +143,18 @@ function reSizeCheck() {
 };
 
 function draw() {
-    let c = [bkgrnd.value, color1.value, color2.value, color3.value, "#123456", "#871381"];
+    let colors = readColorTable();
     let ca = generateCA();
     let dataLength = ca.length;
     let grid = gridSize.value;
-    background(c[0]);
+    background(colors[0]);
     noStroke();
     for (i = 0; i < dataLength; i++) {
         let row = ca[i];
         let rowLength = row.length;
         for (j = 0; j < rowLength; j++ ) {
             if (row[j] != '0') {
-                fill(c[parseInt(row[j])]);
+                fill(colors[parseInt(row[j])]);
                 rect(j * grid, i * grid, grid, grid);
             }
         }
@@ -163,6 +175,63 @@ function reSize(w, h, g) {
     reSizeCheck();
 }
 
+function addColorRow(table, rowNum) {
+    let row = table.insertRow(-1);
+    let label = row.insertCell(0);
+    label.innerHTML = 'Color ' + rowNum.toString() + ':';
+    let cell2 = row.insertCell(1);
+    let input = document.createElement("input");
+    input.setAttribute('type', 'color');
+    input.setAttribute('value', colorList[rowNum]);
+    input.setAttribute('id', 'colorInput' + rowNum);
+    cell2.appendChild(input);
+    let cell3 = row.insertCell(2);
+    let btn = document.createElement('button');
+    btn.setAttribute('onclick', "randomizeColor('colorInput" +  rowNum + "')");
+    let t = document.createTextNode("Rand");
+    btn.appendChild(t);
+    cell3.appendChild(btn);
+}
+
+function createColorTable() {
+    let table = document.getElementById('colors');
+    table.innerHTML = '';
+    for (i = 0; i < numColors.value; i++) {
+        addColorRow(table, i);
+    }
+}
+
+function readColorTable() {
+    let colors = document.getElementById('colors');
+    let output = [];
+    for (i = 0; i < colors.rows.length; i++) {
+        output.push(colors.rows[i].cells[1].firstChild.value);
+    }
+    return output;
+}
+
+function randomColor() {
+    let c = '';
+    while (c.length < 6) {
+        c += (Math.random()).toString(16).substr(-6).substr(-1)
+    }
+    return '#' + c;
+}
+
+function randomizeColor(element) {
+    e = document.getElementById(element);
+    e.value = randomColor();
+    redraw();
+}
+
+function randomizeAllColors() {
+    let colors = document.getElementById('colors');
+    for ( i = 0; i < colors.rows.length; i++) {
+        colors.rows[i].cells[1].firstChild.value = randomColor();
+    }
+    redraw();
+}
+
 function keyPressed() {
     if (keyCode === ENTER) {
         reSizeCheck();
@@ -172,6 +241,14 @@ function keyPressed() {
         changeSpecies(-1);
     } else if (keyCode === 39) {
         changeSpecies(1);
+    } else if (keyCode === 67) {
+        clearTable();
+    } else if (keyCode === 49) {
+        document.getElementById('small').click();
+    } else if (keyCode === 50) {
+        document.getElementById('medium').click();
+    } else if (keyCode === 51) {
+        document.getElementById('large').click();
     };
 };
 

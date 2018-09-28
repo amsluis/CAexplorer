@@ -13,8 +13,8 @@
   <div class="input">
     <table id='inputs'>
       <tr>
-        <td>Elementary<input type='radio' name='caType' value='elementary' checked='checked'></td>
-        <td>Totalistic<input type='radio' name='caType' value='totalistic' ></td>
+        <td>Elementary<input type='radio' name='caType' value='elementary' ></td>
+        <td>Totalistic<input type='radio' name='caType' value='totalistic' checked='checked'></td>
       </tr>
       <tr>
         <td>Point<input type='radio' name='startCond' value='point' checked='checked'></td>
@@ -22,15 +22,15 @@
       </tr>
       <tr>
         <td> Species </td>
-        <td><input type='text' id='speciesIn' value=30></td>
+        <td><input type='text' id='speciesIn' value=13302355></td>
       </tr>
       <tr>
         <td>Neighborhood</td>
-        <td><input type='text' id='neighborhood' value=2></td>
+        <td><input type='text' id='neighborhood' value=1></td>
       </tr>
       <tr>
         <td># of colors</td>
-        <td><input type='text' id='colors' value=3></td>
+        <td><input type='text' id='numColors' value=6></td>
       </tr>
     </table>
     <table>
@@ -63,24 +63,11 @@
         <td><button type='button' id='medium'>Medium</button></td>
         <td><button type='button' id='large'>Large</button></td>
       </tr>
+      <tr>
+        <td><button type='button' onclick="randomizeAllColors()">Randomize Colors</button></td>
+      </tr>
     </table>
     <table id='colors'>
-      <tr>
-        <td> Background:  </td>
-        <td><input type="color" id="background" value="#dddddd"></td>
-      </tr>
-      <tr>
-        <td> Color 1: </td>
-        <td> <input type="color" id="color1" value="#5e8ae2"> </td>
-      </tr>
-      <tr>
-        <td> Color 2: </td>
-        <td> <input type="color" id="color2" value="#fed217"> </td>
-      </tr>
-      <tr>
-        <td> Color 3: </td>
-        <td> <input type="color" id="color3" value="#222222"> </td>
-      </tr>
     </table>
   </div>
   <div id='range'>
