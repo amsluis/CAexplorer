@@ -243,11 +243,11 @@ function keyPressed() {
         changeSpecies(1);
     } else if (keyCode === 67) {
         clearTable();
-    } else if (keyCode === 49) {
+    } else if (keyCode === 81) {
         document.getElementById('small').click();
-    } else if (keyCode === 50) {
+    } else if (keyCode === 87) {
         document.getElementById('medium').click();
-    } else if (keyCode === 51) {
+    } else if (keyCode === 69) {
         document.getElementById('large').click();
     };
 };
