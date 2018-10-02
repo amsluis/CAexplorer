@@ -19,3 +19,7 @@ CA modes
 
 5n 3k 128791 totalistic - crazy patterns
       128817
+
+780528201 - 3n 5c totalistic
+
+Colors FEFFFE BFD7EA 0B3954 E0FF4F FF6663

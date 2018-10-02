@@ -249,8 +249,10 @@ function keyPressed() {
         document.getElementById('medium').click();
     } else if (keyCode === 69) {
         document.getElementById('large').click();
-    };
-};
+    } else if (keyCode === 82) {
+        randomizeAllColors();
+    }
+}
 
 function performanceTest() {
     let t0 = performance.now();
