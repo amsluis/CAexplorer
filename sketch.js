@@ -4,6 +4,7 @@
 // multiple renders - intial conditions, species increments, etc.
 // Use browserify to modularize code
 // Use JSHint to standardize code
+// TODO - redraw calls, remove rest of p5
 var ruleSet = [];
 var species = document.getElementById('speciesIn');
 var nbh = document.getElementById('neighborhood');
@@ -60,14 +61,14 @@ function generateRules(species) {
     if (caType() == 'elementary') {
         document.getElementById('max').innerHTML = Math.pow(n,(Math.pow(n,r))).toString();
         species = species.toString(n).padStart(Math.pow(n,r),'0').split('').reverse();
-        for (i = 0; i < Math.pow(n,r); i++) {
+        for (let i = 0; i < Math.pow(n,r); i++) {
             rule = i.toString(n).padStart(r, '0');
             rules[rule] = species[i];
         }
     } else if (caType() == 'totalistic') {
         document.getElementById('max').innerHTML = Math.pow(n, ((n-1)*r+1));
         species = species.toString(n).padStart(r*(n-1)+1,'0').split('').reverse();
-        for (i = 0; i < (r*(n-1)+1); i++) {
+        for (let i = 0; i < (r*(n-1)+1); i++) {
             rules[i] = species[i];
         }
     }
@@ -78,7 +79,7 @@ function generateFirstRow(width) {
     var output = [];
     var center = Math.floor(width/2);
     if (startCond() == 'random'){
-        for (i =0; i< width; i++) {
+        for (let i = 0; i < width; i++) {
             if (Math.random() >= 0.5) {
                 output.push('1');
             } else {
@@ -86,7 +87,7 @@ function generateFirstRow(width) {
             }
         }
     } else {
-        for (i = 0; i < width; i++) {
+        for (let i = 0; i < width; i++) {
             if (i == center) {
                 output.push('1');
             } else {
@@ -103,17 +104,17 @@ function generateNextRow(lastRow) {
     let r = nbh.value*2 + 1;
     let row = lastRow.slice();
     // Pad row with neighborhood range elements from ends to loop x axis
-    for (i = 0; i < nbh.value; i++) {
+    for (let i = 0; i < nbh.value; i++) {
         row.unshift(row[rowLength - 1]);
         row.push(row[i*2+1]);
     }
     if (caType() == 'elementary') {
-        for (i = 0; i < rowLength; i++) {
+        for (let i = 0; i < rowLength; i++) {
             let neighborhood = row.slice(i,i+r).join('');
             newRow.push(ruleSet[neighborhood]);
         }
     } else if (caType() == 'totalistic') {
-        for (i = 0; i < rowLength; i++) {
+        for (let i = 0; i < rowLength; i++) {
             let neighborhood = row.slice(i,i+r);
             neighborhood = neighborhood.reduce(function(acc, val) { return acc + parseInt(val); }, 0);
             newRow.push(ruleSet[neighborhood]);
@@ -147,15 +148,17 @@ function draw() {
     let ca = generateCA();
     let dataLength = ca.length;
     let grid = gridSize.value;
-    background(colors[0]);
-    noStroke();
-    for (i = 0; i < dataLength; i++) {
+    let canvas = document.getElementById('defaultCanvas0');
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = colors[0];
+    ctx.fillRect(0,0,xDimension.value * grid,yDimension.value * grid);
+    for (let i = 0; i < dataLength; i++) {
         let row = ca[i];
         let rowLength = row.length;
-        for (j = 0; j < rowLength; j++ ) {
+        for (let j = 0; j < rowLength; j++ ) {
             if (row[j] != '0') {
-                fill(colors[parseInt(row[j])]);
-                rect(j * grid, i * grid, grid, grid);
+                ctx.fillStyle = colors[parseInt(row[j])];
+                ctx.fillRect(j * grid, i * grid, grid, grid);
             }
         }
     }
@@ -235,13 +238,13 @@ function randomizeAllColors() {
 function keyPressed() {
     if (keyCode === ENTER) {
         reSizeCheck();
-    } else if (keyCode === 80) {
+    } else if (keyCode === 80) { // 'p'
         performanceTest();
-    } else if (keyCode === 37) {
+    } else if (keyCode === 37) { // '<-'
         changeSpecies(-1);
-    } else if (keyCode === 39) {
+    } else if (keyCode === 39) { // '->'
         changeSpecies(1);
-    } else if (keyCode === 67) {
+    } else if (keyCode === 67) { // 'c'
         clearTable();
     } else if (keyCode === 81) {
         document.getElementById('small').click();
