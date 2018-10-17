@@ -6,6 +6,7 @@
 // Use JSHint to standardize code
 // TODO - redraw calls, remove rest of p5
 var ruleSet = [];
+var canvas
 var species = document.getElementById('speciesIn');
 var nbh = document.getElementById('neighborhood');
 var numColors = document.getElementById('numColors');
@@ -19,7 +20,6 @@ var color3 = document.getElementById('color3');
 //var colorList = ['#eeeeee','#5e8ae2','#fed217','#222222','#123456','#871381','#8c1292']
 //var colorList = ['#ffffff', '#dddddd', '#bbbbbb', '#999999', '#777777', '#555555', '#333333', '#111111', '#000000'];
 var colorList = ['#FEFFFE', '#BFD7EA', '#0B3954', '#E0FF4F', '#FF6663', '#5CA4A9', '#F4F1BB']
-var sizeCheck = [xDimension.value, yDimension.value, gridSize.value];
 function caType() {return document.querySelector('input[name="caType"]:checked').value};
 function startCond() {return document.querySelector('input[name="startCond"]:checked').value};
 document.getElementById('inc').onclick = function() {changeSpecies(1)};
@@ -33,13 +33,19 @@ document.getElementById('medium').onclick = function() {reSize(151,75,5)};
 document.getElementById('large').onclick = function() {reSize(401,200,3)};
 document.getElementById('numColors').onchange = function() {createColorTable()};
 
+setup();
 
 
 function setup() {
-    createCanvas(xDimension.value * gridSize.value,
-                 yDimension.value * gridSize.value).parent("sketch-holder");
-    noLoop();
+    //createCanvas(xDimension.value * gridSize.value,
+    //             yDimension.value * gridSize.value).parent("sketch-holder");
+    console.log('running');
+    let holder = document.getElementById('sketch-holder');
+    canvas = document.createElement('canvas');
+    holder.appendChild(canvas);
+    canvas.id = 'Canvas';
     createColorTable();
+    draw();
 }
 
 function generateCA() {
@@ -123,36 +129,16 @@ function generateNextRow(lastRow) {
     return newRow;
 }
 
-function reSizeCheck() {
-    // p5.js redraw handling is strange, so check whether the canvas
-    // needs to be redrawn and call resizeCanvas or redraw, depending,
-    // to ensure you don't redraw twice.
-    let resize = false;
-    if (xDimension.value != sizeCheck[0] ||
-            yDimension.value != sizeCheck[1] ||
-            gridSize.value != sizeCheck[2]) {
-        resize = true;
-        sizeCheck[0] = xDimension.value;
-        sizeCheck[1] = yDimension.value;
-        sizeCheck[2] = gridSize.value;
-    }
-    if (resize) {
-        resizeCanvas(xDimension.value * gridSize.value, yDimension.value * gridSize.value);
-    } else {
-        redraw();
-    }
-};
-
 function draw() {
     let colors = readColorTable();
     let ca = generateCA();
-    let dataLength = ca.length;
     let grid = gridSize.value;
-    let canvas = document.getElementById('defaultCanvas0');
     var ctx = canvas.getContext('2d');
+    canvas.width  = xDimension.value * gridSize.value;
+    canvas.height = yDimension.value * gridSize.value;
     ctx.fillStyle = colors[0];
     ctx.fillRect(0,0,xDimension.value * grid,yDimension.value * grid);
-    for (let i = 0; i < dataLength; i++) {
+    for (let i = 0; i < ca.length; i++) {
         let row = ca[i];
         let rowLength = row.length;
         for (let j = 0; j < rowLength; j++ ) {
@@ -162,20 +148,19 @@ function draw() {
             }
         }
     }
-};
+}
 
+function reSize(x,y,g) {
+    gridSize.value = g || gridSize.value;
+    xDimension.value = x || xDimension.value;
+    yDimension.value = y || yDimension.value;
+    draw();
+}
 
 function changeSpecies(amount) {
     newValue = parseInt(species.value) + amount;
     document.getElementById('speciesIn').value = newValue.toString();
-    redraw();
-}
-
-function reSize(w, h, g) {
-    xDimension.value = w;
-    yDimension.value = h;
-    gridSize.value = g;
-    reSizeCheck();
+    draw();
 }
 
 function addColorRow(table, rowNum) {
@@ -224,7 +209,7 @@ function randomColor() {
 function randomizeColor(element) {
     e = document.getElementById(element);
     e.value = randomColor();
-    redraw();
+    draw();
 }
 
 function randomizeAllColors() {
@@ -232,30 +217,31 @@ function randomizeAllColors() {
     for ( i = 0; i < colors.rows.length; i++) {
         colors.rows[i].cells[1].firstChild.value = randomColor();
     }
-    redraw();
+    draw();
 }
 
-function keyPressed() {
-    if (keyCode === ENTER) {
-        reSizeCheck();
-    } else if (keyCode === 80) { // 'p'
+document.addEventListener('keydown', (keyCode) => {
+    console.log(keyCode);
+    if (keyCode.key === 'Enter') {
+        draw();
+    } else if (keyCode.key === 'p') {
         performanceTest();
-    } else if (keyCode === 37) { // '<-'
+    } else if (keyCode.key === 'ArrowLeft') {
         changeSpecies(-1);
-    } else if (keyCode === 39) { // '->'
+    } else if (keyCode.key === 'ArrowRight') {
         changeSpecies(1);
-    } else if (keyCode === 67) { // 'c'
+    } else if (keyCode.key === 'c') {
         clearTable();
-    } else if (keyCode === 81) {
+    } else if (keyCode.key === 'q') {
         document.getElementById('small').click();
-    } else if (keyCode === 87) {
+    } else if (keyCode.key === 'w') {
         document.getElementById('medium').click();
-    } else if (keyCode === 69) {
+    } else if (keyCode.key === 'e') {
         document.getElementById('large').click();
-    } else if (keyCode === 82) {
+    } else if (keyCode.key === 'r') {
         randomizeAllColors();
     }
-}
+})
 
 function performanceTest() {
     let t0 = performance.now();
