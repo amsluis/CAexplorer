@@ -3,7 +3,6 @@
 // multiple renders - intial conditions, species increments, etc.
 // Use browserify to modularize code
 // Use JSHint to standardize code
-// TODO - redraw calls, remove rest of p5
 var ruleSet = [];
 var canvas
 var species = document.getElementById('speciesIn');
@@ -12,32 +11,15 @@ var numColors = document.getElementById('numColors');
 var xDimension = document.getElementById('xIn');
 var yDimension = document.getElementById('yIn');
 var gridSize = document.getElementById('sizeIn');
-var bkgrnd = document.getElementById('background');
-var color1 = document.getElementById('color1');
-var color2 = document.getElementById('color2');
-var color3 = document.getElementById('color3');
 //var colorList = ['#eeeeee','#5e8ae2','#fed217','#222222','#123456','#871381','#8c1292']
 //var colorList = ['#ffffff', '#dddddd', '#bbbbbb', '#999999', '#777777', '#555555', '#333333', '#111111', '#000000'];
 var colorList = ['#FEFFFE', '#BFD7EA', '#0B3954', '#E0FF4F', '#FF6663', '#5CA4A9', '#F4F1BB']
 function caType() {return document.querySelector('input[name="caType"]:checked').value};
 function startCond() {return document.querySelector('input[name="startCond"]:checked').value};
-document.getElementById('inc').onclick = function() {changeSpecies(1)};
-document.getElementById('inc10').onclick = function() {changeSpecies(10)};
-document.getElementById('inc100').onclick = function() {changeSpecies(100)};
-document.getElementById('dec').onclick = function() {changeSpecies(-1)};
-document.getElementById('dec10').onclick = function() {changeSpecies(-10)};
-document.getElementById('dec100').onclick = function() {changeSpecies(-100)};
-document.getElementById('small').onclick = function() {reSize(31,15,8)};
-document.getElementById('medium').onclick = function() {reSize(151,75,5)};
-document.getElementById('large').onclick = function() {reSize(401,200,3)};
-document.getElementById('numColors').onchange = function() {createColorTable()};
 
 setup();
 
-
 function setup() {
-    //createCanvas(xDimension.value * gridSize.value,
-    //             yDimension.value * gridSize.value).parent("sketch-holder");
     console.log('running');
     let holder = document.getElementById('sketch-holder');
     canvas = document.createElement('canvas');
@@ -77,7 +59,6 @@ function generateRules(species) {
             rules[i] = species[i];
         }
     }
-    debugger;
     return rules;
 }
 
@@ -221,7 +202,6 @@ function randomizeAllColors() {
 }
 
 document.addEventListener('keydown', (keyCode) => {
-    console.log(keyCode);
     if (keyCode.key === 'Enter') {
         draw();
     } else if (keyCode.key === 'p') {

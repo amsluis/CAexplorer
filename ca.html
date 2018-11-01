@@ -33,14 +33,14 @@
     </table>
     <table>
       <tr>
-        <td><button type='button' id='inc'>+1</button></td>
-        <td><button type='button' id='inc10'>+10</button></td>
-        <td><button type='button' id='inc100'>+100</button></td>
+        <td><button type='button' onclick="changeSpecies(1)">+1</button></td>
+        <td><button type='button' onclick="changeSpecies(10)">+10</button></td>
+        <td><button type='button' onclick="changeSpecies(100)">+100</button></td>
       </tr>
       <tr>
-        <td><button type='button' id='dec'>-1</button></td>
-        <td><button type='button' id='dec10'>-10</button></td>
-        <td><button type='button' id='dec100'>-100</button></td>
+        <td><button type='button' onclick="changeSpecies(-1)">-1</button></td>
+        <td><button type='button' onclick="changeSpecies(-10)">-10</button></td>
+        <td><button type='button' onclick="changeSpecies(-100)">-100</button></td>
       </tr>
     </table>
     <table>
@@ -57,9 +57,15 @@
         <td><input type='text' id='sizeIn' value=5></td>
       </tr>
       <tr>
-        <td><button type='button' id='small'>Small</button></td>
-        <td><button type='button' id='medium'>Medium</button></td>
-        <td><button type='button' id='large'>Large</button></td>
+        <td><button type='button' id='small' onclick="reSize(31,15,8)">
+            Small
+        </button></td>
+        <td><button type='button' id='medium' onclick="reSize(151,75,5)">
+            Medium
+        </button></td>
+        <td><button type='button' id='large' onclick="reSize(401,200,3)">
+            Large
+        </button></td>
       </tr>
       <tr>
         <td><button type='button' onclick="randomizeAllColors()">Randomize Colors</button></td>
