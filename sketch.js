@@ -78,6 +78,7 @@ function generateRules(species) {
             rules[i] = species[i];
         }
     }
+    debugger;
     return rules;
 }
 
@@ -240,6 +241,8 @@ document.addEventListener('keydown', (keyCode) => {
         document.getElementById('large').click();
     } else if (keyCode.key === 'r') {
         randomizeAllColors();
+    } else if (keyCode.key === 'a') {
+        reSize(1200,600,1);
     }
 })
 

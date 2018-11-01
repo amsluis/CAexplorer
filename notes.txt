@@ -13,6 +13,10 @@ CA modes
 * Elementary CAs
 * Totalistic
 * Outer Totalistic
+* ASYMMETRIC totalistic - divide up each half
+
+
+Pinwheel Display / Mandala
 
 {3 neighborhood totalistic CA} of note
 - 92,96,100,
@@ -21,5 +25,7 @@ CA modes
       128817
 
 780528201 - 3n 5c totalistic
+13303878 - 3n 6c totalistic
+2480068 - 3n 4c totalistic
 
 Colors FEFFFE BFD7EA 0B3954 E0FF4F FF6663
