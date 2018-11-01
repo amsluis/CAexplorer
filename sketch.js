@@ -1,6 +1,5 @@
 // mandala rendering along cardinal directions
 // color palette selection
-// remove p5
 // multiple renders - intial conditions, species increments, etc.
 // Use browserify to modularize code
 // Use JSHint to standardize code
