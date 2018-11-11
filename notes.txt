@@ -29,3 +29,9 @@ Pinwheel Display / Mandala
 2480068 - 3n 4c totalistic
 
 Colors FEFFFE BFD7EA 0B3954 E0FF4F FF6663
+
+
+
+Performance: with 401x200 size | after optimization
+- totalistic = 0.87 to 0.82       0.2
+- elementary = 3.4                0.14

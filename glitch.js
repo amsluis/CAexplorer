@@ -3,8 +3,6 @@
 // multiple renders - intial conditions, species increments, etc.
 // Use browserify to modularize code
 // Use JSHint to standardize code
-// Allow input & working with large numbers
-//  - BigInt library with toArray(radix) function
 var ruleSet;
 var canvas;
 var species = document.getElementById('speciesIn');
@@ -22,6 +20,7 @@ function startCond() {return document.querySelector('input[name="startCond"]:che
 setup();
 
 function setup() {
+    console.log('running');
     let holder = document.getElementById('sketch-holder');
     canvas = document.createElement('canvas');
     holder.appendChild(canvas);
@@ -32,6 +31,7 @@ function setup() {
 
 function generateCA() {
     ruleSet = generateRules();
+    debugger;
     let output = [];
     output.push(generateFirstRow(xDimension.value));
     for (let i = 0; i < yDimension.value - 1; i++) {
@@ -64,79 +64,50 @@ function generateRules() {
 }
 
 function generateFirstRow(width) {
-    var output = new Uint8Array(width);
+    var output = [];
     var center = Math.floor(width/2);
-    if (startCond() == 'random') {
+    if (startCond() == 'random'){
         for (let i = 0; i < width; i++) {
             if (Math.random() >= 0.5) {
-                output[i] = 1;
+                output.push('1');
             } else {
-                output[i] = 0;
+                output.push('0');
             }
         }
     } else {
-        output[center] = 1;
+        for (let i = 0; i < width; i++) {
+            if (i == center) {
+                output.push('1');
+            } else {
+                output.push('0');
+            }
+        }
     }
-    output = loopRowEnds(output);
     return output;
-}
-
-function loopRowEnds(row) { //copyWithin() may be cleaner + more performant
-    let output = new Uint8Array(row.length + nbh.value * 2);
-    for (let i = 0; i < nbh.value; i++) {
-        output[i] = row[row.length - nbh.value + i];
-        output[output.length - 1 - i] = row[nbh.value - 1 - i];
-    }
-    output.set(row, nbh.value);
-    return output;
-}
-
-function updateLoopEnds(row) {
-    const len = row.length;
-    const n = parseInt(nbh.value);
-    row.copyWithin(0, len - n*2, len - n);
-    row.copyWithin(len - n, n, n*2);
-    return row;
 }
 
 function generateNextRow(lastRow) {
-    var len = lastRow.length;
-    var newRow = new Uint8Array(len);
-    const r = nbh.value*2 + 1;
-    const n = parseInt(nbh.value);
-    const c = parseInt(numColors.value);
-    if (caType() == 'elementary') { //special case small neighborhoods for ~4x speedup
-        if (n == 1) {
-            for (let i = 0; i < len - n*2; i++) {
-                let total = lastRow[i]*c*c + lastRow[i+1]*c + lastRow[i+2]
-                newRow[i+n] = ruleSet[total];
-            }
-        } else if (n == 2) {
-            for (let i = 0; i < len - n*2; i++) {
-                let total = lastRow[i]*c*c*c*c + lastRow[i+1]*c*c*c +
-                    lastRow[i+2]*c*c + lastRow[i+3]*c + lastRow[i+4];
-                newRow[i+n] = ruleSet[total];
-            }
-        } else {
-            for (let i = 0; i < len - n*2; i++) {
-                let total = 0
-                for (let j = 0; j < r; j++) {
-                    total += lastRow[i + j]*Math.pow(c, j);
-                }
-                newRow[i+n] = ruleSet[total];
-            }
+    var newRow = [];
+    let rowLength = lastRow.length;
+    let r = nbh.value*2 + 1;
+    let row = lastRow.slice();
+    // Pad row with neighborhood range elements from ends to loop x axis
+    for (let i = 0; i < nbh.value; i++) {
+        row.unshift(row[rowLength - 1]);
+        row.push(row[i*2+1]);
+    }
+    if (caType() == 'elementary') {
+        for (let i = 0; i < rowLength; i++) {
+            let neighborhood = row.slice(i,i+r).join('');
+            newRow.push(ruleSet[neighborhood]);
         }
     } else if (caType() == 'totalistic') {
-        for (let i = 0; i < len - n*2; i++) {
-            let total = 0
-            for (let j = 0; j < r; j++) {
-                total += lastRow[i+j];
-            }
-            newRow[i+n] = ruleSet[total];
-
+        for (let i = 0; i < rowLength; i++) {
+            let neighborhood = row.slice(i,i+r);
+            neighborhood = neighborhood.reduce(function(acc, val) { return acc + parseInt(val); }, 0);
+            newRow.push(ruleSet[neighborhood]);
         }
     }
-    updateLoopEnds(newRow);
     return newRow;
 }
 
@@ -144,7 +115,6 @@ function draw() {
     let colors = readColorTable();
     let ca = generateCA();
     let grid = gridSize.value;
-    const r = parseInt(nbh.value);
     var ctx = canvas.getContext('2d');
     createColorTable();
     canvas.width  = xDimension.value * gridSize.value;
@@ -155,8 +125,8 @@ function draw() {
         let row = ca[i];
         let rowLength = row.length;
         for (let j = 0; j < rowLength; j++ ) {
-            if (row[j + r] != '0') {
-                ctx.fillStyle = colors[parseInt(row[j + r])];
+            if (row[j] != '0') {
+                ctx.fillStyle = colors[parseInt(row[j])];
                 ctx.fillRect(j * grid, i * grid, grid, grid);
             }
         }
