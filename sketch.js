@@ -19,16 +19,29 @@ var colorList = ['#FEFFFE', '#BFD7EA', '#0B3954', '#E0FF4F', '#FF6663', '#5CA4A9
 function caType() {return document.querySelector('input[name="caType"]:checked').value};
 function startCond() {return document.querySelector('input[name="startCond"]:checked').value};
 
-setup();
+function Settings() {
+    this.ruleSet = 'stuff';
+    this.old = 'remains';
+}
 
-function setup() {
+function Render() {
+    var render = new Settings();
+
+    this.ruleSet = 'new';
+
+    return render;
+};
+
+var a = new Render();
+
+(function setup() {
     let holder = document.getElementById('sketch-holder');
     canvas = document.createElement('canvas');
     holder.appendChild(canvas);
     canvas.id = 'Canvas';
     createColorTable();
     draw();
-}
+}());
 
 function generateCA() {
     ruleSet = generateRules();
