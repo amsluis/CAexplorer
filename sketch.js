@@ -19,20 +19,40 @@ var colorList = ['#FEFFFE', '#BFD7EA', '#0B3954', '#E0FF4F', '#FF6663', '#5CA4A9
 function caType() {return document.querySelector('input[name="caType"]:checked').value};
 function startCond() {return document.querySelector('input[name="startCond"]:checked').value};
 
-function Settings() {
-    this.ruleSet = 'stuff';
-    this.old = 'remains';
-}
+var settings = {
+    species: null,
+    nbh: null,
+    numColors: null,
+    xDimension: null,
+    yDimension: null,
+    gridSize: null,
+    caType: null,
+    startCond: null };
 
-function Render() {
-    var render = new Settings();
 
-    this.ruleSet = 'new';
-
-    return render;
+function readSettings(s) {
+    s.species = document.getElementById('speciesIn').value;
+    s.nbh = document.getElementById('neighborhood').value;
+    s.numColors = document.getElementById('numColors').value;
+    s.xDimension = document.getElementById('xIn').value;
+    s.yDimension = document.getElementById('yIn').value;
+    s.gridSize = document.getElementById('sizeIn').value;
+    s.caType = document.querySelector('input[name="caType"]:checked').value;
+    s.startCond = document.querySelector('input[name="startCond"]:checked').value;
 };
 
-var a = new Render();
+function writeSettings(s) {
+    document.getElementById('speciesIn').value = s.species
+    document.getElementById('neighborhood').value = s.nbh
+    document.getElementById('numColors').value = s.numColors
+    document.getElementById('xIn').value = s.xDimension
+    document.getElementById('yIn').value = s.yDimension
+    document.getElementById('sizeIn').value = s.gridSize
+    // document.querySelector('input[name="caType"]:checked').value = s.caType
+    // document.querySelector('input[name="startCond"]:checked').value = s.startCond
+    // TODO
+};
+
 
 (function setup() {
     let holder = document.getElementById('sketch-holder');
