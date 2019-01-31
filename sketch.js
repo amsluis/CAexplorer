@@ -4,23 +4,13 @@
 // Use JSHint to standardize code
 // Allow input & working with large numbers
 //  - BigInt library with toArray(radix) function
+//
 //var colorList = ['#eeeeee','#5e8ae2','#fed217','#222222','#123456','#871381','#8c1292']
 //var colorList = ['#ffffff', '#dddddd', '#bbbbbb', '#999999', '#777777', '#555555', '#333333', '#111111', '#000000'];
-var ca;
-var colorList = ['#FEFFFE', '#BFD7EA', '#0B3954', '#E0FF4F', '#FF6663', '#5CA4A9', '#F4F1BB']
-function caType() {return document.querySelector('input[name="caType"]:checked').value};
-function startCond() {return document.querySelector('input[name="startCond"]:checked').value};
 
-var settings = {
-    species: null,
-    nbh: null,
-    numColors: null,
-    xDimension: null,
-    yDimension: null,
-    gridSize: null,
-    caType: null,
-    startCond: null
-};
+var ca;
+var colorList = ['#FEFFFE', '#BFD7EA', '#0B3954', '#E0FF4F', '#FF6663', '#5CA4A9', '#F4F1BB'];
+var settings = { };
 
 function readSettings(s) {
     s.species = document.getElementById('speciesIn').value;
@@ -45,15 +35,12 @@ function writeSettings(s) {
     // TODO
 };
 
-
-
 function CA(settings, canvas) {
     Object.setPrototypeOf(this.__proto__, settings);
     this.ruleSet = null;
     this.canvas = canvas;
     this.ca = null;
-}
-
+};
 
 CA.prototype.generateCA = function() {
     this.generateRules();
@@ -63,11 +50,11 @@ CA.prototype.generateCA = function() {
         output.push(this.generateNextRow(output[output.length - 1]));
     }
     return output;
-}
+};
 
 
 CA.prototype.generateRules = function() {
-    let sp = this.species;
+    let sp = parseInt(this.species);  // TODO - big int
     let r =  (this.nbh * 2) + 1;
     let c =  this.numColors;
     let rules = [];
@@ -86,12 +73,12 @@ CA.prototype.generateRules = function() {
         }
     }
     this.ruleSet = new Uint8Array(rules);
-}
+};
 
 CA.prototype.generateFirstRow = function(width) {
     var output = new Uint8Array(width);
     var center = Math.floor(width/2);
-    if (startCond() == 'random') {
+    if (this.startCond == 'random') {
         for (let i = 0; i < width; i++) {
             if (Math.random() >= 0.5) {
                 output[i] = 1;
@@ -104,7 +91,7 @@ CA.prototype.generateFirstRow = function(width) {
     }
     output = this.loopRowEnds(output);
     return output;
-}
+};
 
 //copyWithin() may be cleaner + more performant
 CA.prototype.loopRowEnds = function(row) { 
@@ -115,7 +102,7 @@ CA.prototype.loopRowEnds = function(row) {
     }
     output.set(row, this.nbh);
     return output;
-}
+};
 
 CA.prototype.updateLoopEnds = function(row) {
     const len = row.length;
@@ -123,7 +110,7 @@ CA.prototype.updateLoopEnds = function(row) {
     row.copyWithin(0, len - n*2, len - n);
     row.copyWithin(len - n, n, n*2);
     return row;
-}
+};
 
 CA.prototype.generateNextRow = function(lastRow) {
     var len = lastRow.length;
@@ -166,7 +153,8 @@ CA.prototype.generateNextRow = function(lastRow) {
     return newRow;
 };
 
-CA.prototype.drawCa = function() {
+CA.prototype.draw = function() {
+    readSettings(ca);
     this.ca = this.generateCA();
     let colors = readColorTable();
     let g = this.gridSize;
@@ -196,21 +184,21 @@ CA.prototype.drawCa = function() {
     readSettings(settings);
     ca = new CA(settings, canvas);
     createColorTable();
-    ca.drawCa();
+    ca.draw();
 }());
 
 function reSize(x,y,g) {
-    gridSize.value = g || gridSize.value;
-    xDimension.value = x || xDimension.value;
-    yDimension.value = y || yDimension.value;
-    draw();
-}
+    document.getElementById('sizeIn').value = g || ca.gridSize;
+    document.getElementById('xIn').value = x || ca.xDimension;
+    document.getElementById('yIn').value = y || ca.yDimension;
+    ca.draw();
+};
 
 function changeSpecies(amount) {
-    newValue = parseInt(species.value) + amount;
+    newValue = parseInt(ca.species) + amount; //TODO bigint
     document.getElementById('speciesIn').value = newValue.toString();
-    draw();
-}
+    ca.draw();
+};
 
 function addColorRow(table, rowNum) {
     let row = table.insertRow(-1);
@@ -229,51 +217,51 @@ function addColorRow(table, rowNum) {
     let t = document.createTextNode("Rand");
     btn.appendChild(t);
     cell3.appendChild(btn);
-}
+};
 
 function createColorTable() {
     let table = document.getElementById('colors');
     table.innerHTML = '';
     for (i = 0; i < numColors.value; i++) {
         addColorRow(table, i);
-    }
-}
+    };
+};
 
 function readColorTable() {
     let colors = document.getElementById('colors');
     let output = [];
     for (i = 0; i < colors.rows.length; i++) {
         output.push(colors.rows[i].cells[1].firstChild.value);
-    }
+    };
     colorList = output;
     return output;
-}
+};
 
 function randomColor() {
     let c = '';
     while (c.length < 6) {
         c += (Math.random()).toString(16).substr(-6).substr(-1)
-    }
+    };
     return '#' + c;
-}
+};
 
 function randomizeColor(element) {
     e = document.getElementById(element);
     e.value = randomColor();
-    draw();
-}
+    ca.draw();
+};
 
 function randomizeAllColors() {
     let colors = document.getElementById('colors');
     for ( i = 0; i < colors.rows.length; i++) {
         colors.rows[i].cells[1].firstChild.value = randomColor();
     }
-    draw();
-}
+    ca.draw();
+};
 
 document.addEventListener('keydown', (keyCode) => {
     if (keyCode.key === 'Enter') {
-        draw();
+        ca.draw();
     } else if (keyCode.key === 'p') {
         performanceTest();
     } else if (keyCode.key === 'ArrowLeft') {
@@ -293,7 +281,7 @@ document.addEventListener('keydown', (keyCode) => {
     } else if (keyCode.key === 'a') {
         reSize(1200,600,1);
     }
-})
+});
 
 function performanceTest() {
     let t0 = performance.now();
@@ -305,4 +293,4 @@ function performanceTest() {
     };
     let t1 = performance.now();
     console.log("Test took: " + (t1 - t0)/1000 + " seconds");
-}
+};
