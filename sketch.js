@@ -13,7 +13,7 @@ var colorList = ['#FEFFFE', '#BFD7EA', '#0B3954', '#E0FF4F', '#FF6663', '#5CA4A9
 var settings = { };
 
 function readSettings(s) {
-    s.species = document.getElementById('speciesIn').value;
+    s.species = bigInt(document.getElementById('speciesIn').value);
     s.nbh = parseInt(document.getElementById('neighborhood').value);
     s.numColors = parseInt(document.getElementById('numColors').value);
     s.xDimension = parseInt(document.getElementById('xIn').value);
@@ -24,12 +24,12 @@ function readSettings(s) {
 };
 
 function writeSettings(s) {
-    document.getElementById('speciesIn').value = s.species
-    document.getElementById('neighborhood').value = s.nbh
-    document.getElementById('numColors').value = s.numColors
-    document.getElementById('xIn').value = s.xDimension
-    document.getElementById('yIn').value = s.yDimension
-    document.getElementById('sizeIn').value = s.gridSize
+    document.getElementById('speciesIn').value = s.species.toString();
+    document.getElementById('neighborhood').value = s.nbh;
+    document.getElementById('numColors').value = s.numColors;
+    document.getElementById('xIn').value = s.xDimension;
+    document.getElementById('yIn').value = s.yDimension;
+    document.getElementById('sizeIn').value = s.gridSize;
     // document.querySelector('input[name="caType"]:checked').value = s.caType
     // document.querySelector('input[name="startCond"]:checked').value = s.startCond
     // TODO
@@ -52,24 +52,31 @@ CA.prototype.generateCA = function() {
     return output;
 };
 
-
 CA.prototype.generateRules = function() {
-    let sp = parseInt(this.species);  // TODO - big int
+    //let sp = parseInt(this.species);  // TODO - big int
     let r =  (this.nbh * 2) + 1;
     let c =  this.numColors;
+    let sp = this.species.toArray(c);
     let rules = [];
     if (this.caType == 'elementary') {
         document.getElementById('max').innerHTML = Math.pow(c,(Math.pow(c,r))).toString();
-        sp = sp.toString(c).padStart(Math.pow(c,r),'0').split('').reverse();
+        while (sp.value.length < Math.pow(c,r)) {
+            sp.value.unshift(0);
+        };
+        sp.value.reverse();
         for (let i = 0; i < Math.pow(c,r); i++) {
             rule = i.toString(c).padStart(r, '0');
-            rules.push(sp[i]);
+            rules.push(sp.value[i]);
         }
     } else if (this.caType == 'totalistic') {
         document.getElementById('max').innerHTML = Math.pow(c, ((c-1)*r+1));
-        sp = sp.toString(c).padStart(r*(c-1)+1, '0').split('').reverse();
+        //sp = sp.toString(c).padStart(r*(c-1)+1, '0').split('').reverse();
+        while (sp.value.length < (r*(c-1)+1)) {
+            sp.value.unshift(0);
+        };
+        sp.value.reverse();
         for (let i = 0; i < (r*(c-1)+1); i++) {
-            rules.push(sp[i]);
+            rules.push(sp.value[i]);
         }
     }
     this.ruleSet = new Uint8Array(rules);
@@ -188,15 +195,16 @@ CA.prototype.draw = function() {
 }());
 
 function reSize(x,y,g) {
-    document.getElementById('sizeIn').value = g || ca.gridSize;
-    document.getElementById('xIn').value = x || ca.xDimension;
-    document.getElementById('yIn').value = y || ca.yDimension;
+    ca.gridSize = g || ca.gridSize;
+    ca.xDimension = x || ca.xDimension;
+    ca.yDimension = y || ca.yDimension;
+    writeSettings(ca);
     ca.draw();
 };
 
 function changeSpecies(amount) {
-    newValue = parseInt(ca.species) + amount; //TODO bigint
-    document.getElementById('speciesIn').value = newValue.toString();
+    ca.species = ca.species.add(amount);
+    writeSettings(ca);
     ca.draw();
 };
 
