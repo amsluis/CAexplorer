@@ -8,8 +8,8 @@
 var ca;
 var colorList = ['#FEFFFE', '#BFD7EA', '#0B3954', '#E0FF4F', '#FF6663', '#5CA4A9', '#F4F1BB'];
 var settings = { };
-var canvas_hidden = document.getElementById('canvas_hidden');
-// canvas_hidden.hidden = true;
+var canvas_hidden = document.createElement('canvas');
+canvas_hidden.hidden = true;
 var canvas = document.getElementById('canvas');
 
 var noSmoothing = function(context) {
