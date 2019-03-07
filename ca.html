@@ -4,81 +4,92 @@
     <script src="bigInt.min.js" defer></script>
     <script src="sketch.js" defer></script>
     <title>Cellula Automata Explorer</title>
+    <style>
+      canvas {
+        image-rendering: optimizeSpeed;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: -o-crisp-edges;
+        image-rendering: crisp-edges;
+        -ms-interpolation-mode: nearest-neighbor;
+      }
+    </style>
   </head>
   <body>
-  <h1>Cellular Automata Explorer</h1>
-  <div class="input">
-    <table id='inputs'>
-      <tr>
-        <td>Elementary<input type='radio' name='caType' value='elementary' ></td>
-        <td>Totalistic<input type='radio' name='caType' value='totalistic' checked='checked'></td>
-      </tr>
-      <tr>
-        <td>Point<input type='radio' name='startCond' value='point' checked='checked'></td>
-        <td>Random<input type='radio' name='startCond' value='random'</td>
-      </tr>
-      <tr>
-        <td> Species </td>
-        <td><textarea id='speciesIn' value=13302355 cols="30" rows="1">13302355</textarea>
-      </tr>
-      <tr>
-        <td>Neighborhood</td>
-        <td><input type='text' id='neighborhood' value=1></td>
-      </tr>
-      <tr>
-        <td># of colors</td>
-        <td><input type='text' id='numColors' value=6></td>
-      </tr>
-    </table>
-    <table>
-      <tr>
-        <td><button type='button' onclick="changeSpecies(1)">+1</button></td>
-        <td><button type='button' onclick="changeSpecies(10)">+10</button></td>
-        <td><button type='button' onclick="changeSpecies(100)">+100</button></td>
-      </tr>
-      <tr>
-        <td><button type='button' onclick="changeSpecies(-1)">-1</button></td>
-        <td><button type='button' onclick="changeSpecies(-10)">-10</button></td>
-        <td><button type='button' onclick="changeSpecies(-100)">-100</button></td>
-      </tr>
-    </table>
-    <table>
-      <tr>
-        <td> Width </td>
-        <td> <input type='text' id='xIn' value=151></td>
-      </tr>
-      <tr>
-        <td> Height </td>
-        <td><input type='text' id='yIn' value=76></td>
-      </tr>
-      <tr>
-        <td> Cell size </td>
-        <td><input type='text' id='sizeIn' value=5></td>
-      </tr>
-      <tr>
-        <td><button type='button' id='small' onclick="reSize(31,15,8)">
-            Small
-        </button></td>
-        <td><button type='button' id='medium' onclick="reSize(151,75,5)">
-            Medium
-        </button></td>
-        <td><button type='button' id='large' onclick="reSize(401,200,3)">
-            Large
-        </button></td>
-      </tr>
-      <tr>
-        <td><button type='button' onclick="randomizeAllColors()">Randomize Colors</button></td>
-      </tr>
-    </table>
-    <table id='colors'>
-    </table>
-  </div>
-  <div id='range'>
-    <table>
-      <td>Species Range: 0 - <span id='max'></span></td>
-    </table>
-  </div>
-  <div id="sketch-holder">
-  </div>
-  </body>
-</html>
+    <h1>Cellular Automata Explorer</h1>
+    <div class="input">
+      <table id='inputs'>
+        <tr>
+          <td>Elementary<input type='radio' name='caType' value='elementary' ></td>
+          <td>Totalistic<input type='radio' name='caType' value='totalistic' checked='checked'></td>
+        </tr>
+        <tr>
+          <td>Point<input type='radio' name='startCond' value='point' checked='checked'></td>
+          <td>Random<input type='radio' name='startCond' value='random'</td>
+        </tr>
+        <tr>
+          <td> Species </td>
+          <td><textarea id='speciesIn' value=13302355 cols="30" rows="1">13302355</textarea>
+          </tr>
+          <tr>
+            <td>Neighborhood</td>
+            <td><input type='text' id='neighborhood' value=1></td>
+          </tr>
+          <tr>
+            <td># of colors</td>
+            <td><input type='text' id='numColors' value=6></td>
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <td><button type='button' onclick="changeSpecies(1)">+1</button></td>
+            <td><button type='button' onclick="changeSpecies(10)">+10</button></td>
+            <td><button type='button' onclick="changeSpecies(100)">+100</button></td>
+          </tr>
+          <tr>
+            <td><button type='button' onclick="changeSpecies(-1)">-1</button></td>
+            <td><button type='button' onclick="changeSpecies(-10)">-10</button></td>
+            <td><button type='button' onclick="changeSpecies(-100)">-100</button></td>
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <td> Width </td>
+            <td> <input type='text' id='xIn' value=151></td>
+          </tr>
+          <tr>
+            <td> Height </td>
+            <td><input type='text' id='yIn' value=76></td>
+          </tr>
+          <tr>
+            <td> Cell size </td>
+            <td><input type='text' id='sizeIn' value=5></td>
+          </tr>
+          <tr>
+            <td><button type='button' id='small' onclick="reSize(31,15,8)">
+                Small
+            </button></td>
+            <td><button type='button' id='medium' onclick="reSize(151,75,5)">
+                Medium
+            </button></td>
+            <td><button type='button' id='large' onclick="reSize(401,200,3)">
+                Large
+            </button></td>
+          </tr>
+          <tr>
+            <td><button type='button' onclick="randomizeAllColors()">Randomize Colors</button></td>
+          </tr>
+        </table>
+        <table id='colors'>
+        </table>
+      </div>
+      <div id='range'>
+        <table>
+          <td>Species Range: 0 - <span id='max'></span></td>
+        </table>
+      </div>
+      <div id="sketch-holder">
+        <canvas id='canvas'></canvas>
+      </div>
+    </body>
+  </html>

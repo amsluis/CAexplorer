@@ -35,10 +35,11 @@ function writeSettings(s) {
     // TODO
 };
 
-function CA(settings, canvas) {
+function CA(settings, canvas, canvas_hidden) {
     Object.setPrototypeOf(this.__proto__, settings);
     this.ruleSet = null;
     this.canvas = canvas;
+    this.canvas_hidden = canvas_hidden;
     this.ca = null;
 };
 
@@ -159,14 +160,54 @@ CA.prototype.generateNextRow = function(lastRow) {
     return newRow;
 };
 
+CA.prototype.buildPixelArray = function(colors) {
+    let array_length = this.xDimension * this.yDimension * 4;
+    let data = new Uint8ClampedArray(array_length);
+    for (let i = 0; i < this.ca.length; i++ ) {
+        let row = this.ca[i];
+        let shift = row.length - 2;
+        for (let j = 1; j < row.length - 2; j++ ) {
+            let color = colors[row[j]];
+            data[i*shift*4 + j*4] =     parseInt(color.slice(1,3),16);
+            data[i*shift*4 + j*4 + 1] = parseInt(color.slice(3,5),16);
+            data[i*shift*4 + j*4 + 2] = parseInt(color.slice(5,7),16);
+            data[i*shift*4 + j*4 + 3] = 0xff;
+        }
+    }
+    return data;
+}
+
+
 CA.prototype.draw = function() {
     readSettings(ca);
     this.ca = this.generateCA();
     let colors = readColorTable();
     let g = this.gridSize;
     const r = this.nbh;
-    var ctx = this.canvas.getContext('2d');
+    let ctx = this.canvas.getContext('2d');
+    let ctx_hidden = this.canvas_hidden.getContext('2d');
+    ctx_hidden.imageSmoothingEnabled = false;
+    ctx_hidden.mozImageSmoothingEnabled = false;
+    ctx_hidden.webkitImageSmoothingEnabled = false;
+    ctx_hidden.msImageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = false;
+    ctx.mozImageSmoothingEnabled = false;
+    ctx.webkitImageSmoothingEnabled = false;
+    ctx.msImageSmoothingEnabled = false;
+    let pixel_data = this.buildPixelArray(colors);
     createColorTable();
+
+    this.canvas_hidden.height = this.yDimension;
+    this.canvas_hidden.width =  this.xDimension;
+    this.canvas.height = this.yDimension * g;
+    this.canvas.width =  this.xDimension * g;
+
+    let image = new ImageData(pixel_data, this.xDimension);
+    ctx_hidden.putImageData(image, 0, 0);
+    ctx.drawImage(this.canvas_hidden, 0, 0, this.canvas.width, this.canvas.height);
+
+
+    /*
     canvas.width  = this.xDimension * g;
     canvas.height = this.yDimension * g;
     ctx.fillStyle = colors[0];
@@ -181,16 +222,16 @@ CA.prototype.draw = function() {
             }
         }
     }
+    */
 };
 
 (function setup() {
-    canvas = document.createElement('canvas');
     canvas_hidden = document.createElement('canvas');
     canvas_hidden.hidden = true;
-    document.getElementById('sketch-holder').appendChild(canvas);
-    canvas.id = 'Canvas';
+    canvas = document.getElementById('canvas');
+    canvas_hidden.id = 'Canvas Hidden';
     readSettings(settings);
-    ca = new CA(settings, canvas);
+    ca = new CA(settings, canvas, canvas_hidden);
     createColorTable();
     ca.draw();
 }());
