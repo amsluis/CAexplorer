@@ -170,15 +170,24 @@ CA.prototype.generateNextRow = function(lastRow) {
 CA.prototype.buildPixelArray = function(colors) {
     let array_length = this.xDimension * this.yDimension * 4;
     let data = new Uint8ClampedArray(array_length);
+    let byte_colors = [];
+    // convert colors into rgba uint8 values
+    colors.forEach(function(color) {
+        let bytes = [];
+        bytes.push(parseInt(color.slice(1,3),16));
+        bytes.push(parseInt(color.slice(3,5),16));
+        bytes.push(parseInt(color.slice(5,7),16));
+        bytes.push(0xff);
+        byte_colors.push(bytes);
+    });
+    // loop over array, setting rgba values
+    // note that each row still has the extra 'looping' margins
     for (let i = 0; i < this.ca.length; i++ ) {
         let row = this.ca[i];
-        let shift = row.length - 2;
-        for (let j = 0; j < row.length - 2; j++ ) {
-            let color = colors[row[j+1]];
-            data[i*shift*4 + j*4] =     parseInt(color.slice(1,3),16);
-            data[i*shift*4 + j*4 + 1] = parseInt(color.slice(3,5),16);
-            data[i*shift*4 + j*4 + 2] = parseInt(color.slice(5,7),16);
-            data[i*shift*4 + j*4 + 3] = 0xff;
+        let shift = row.length - (this.nbh * 2);
+        for (let j = 0; j < shift; j++ ) {
+            let color = byte_colors[row[j+1]];
+            data.set(color, (i*shift*4 + j*4));
         }
     }
     return data;
@@ -189,15 +198,13 @@ CA.prototype.draw = function() {
     readSettings(ca);
     this.ca = this.generateCA();
     let colors = readColorTable();
-    let g = this.gridSize;
-    const r = this.nbh;
     let pixel_data = this.buildPixelArray(colors);
     createColorTable();
 
     this.canvas_hidden.height = this.yDimension;
     this.canvas_hidden.width =  this.xDimension;
-    this.canvas.height = this.yDimension * g;
-    this.canvas.width =  this.xDimension * g;
+    this.canvas.height = this.yDimension * this.gridSize;
+    this.canvas.width =  this.xDimension * this.gridSize;
 
     let ctx = this.canvas.getContext('2d');
     let ctx_hidden = this.canvas_hidden.getContext('2d');
