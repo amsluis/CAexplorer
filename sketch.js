@@ -53,7 +53,6 @@ CA.prototype.generateCA = function() {
 };
 
 CA.prototype.generateRules = function() {
-    //let sp = parseInt(this.species);  // TODO - big int
     let r =  (this.nbh * 2) + 1;
     let c =  this.numColors;
     let sp = this.species.toArray(c);
@@ -186,6 +185,8 @@ CA.prototype.draw = function() {
 
 (function setup() {
     canvas = document.createElement('canvas');
+    canvas_hidden = document.createElement('canvas');
+    canvas_hidden.hidden = true;
     document.getElementById('sketch-holder').appendChild(canvas);
     canvas.id = 'Canvas';
     readSettings(settings);
@@ -294,10 +295,10 @@ document.addEventListener('keydown', (keyCode) => {
 function performanceTest() {
     let t0 = performance.now();
     for (var i = 2116; i <= 2216; i++) {
-        xDimension.value = 401;
-        yDimension.value = 200;
-        species.value = i;
-        generateCA();
+        ca.xDimension.value = 401;
+        ca.yDimension.value = 200;
+        ca.species.value = i;
+        ca.generateCA();
     };
     let t1 = performance.now();
     console.log("Test took: " + (t1 - t0)/1000 + " seconds");
