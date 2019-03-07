@@ -2,15 +2,22 @@
 // multiple renders - intial conditions, species increments, etc.
 // Use browserify to modularize code
 // Use JSHint to standardize code
-// Allow input & working with large numbers
-//  - BigInt library with toArray(radix) function
-//
 //var colorList = ['#eeeeee','#5e8ae2','#fed217','#222222','#123456','#871381','#8c1292']
 //var colorList = ['#ffffff', '#dddddd', '#bbbbbb', '#999999', '#777777', '#555555', '#333333', '#111111', '#000000'];
 
 var ca;
 var colorList = ['#FEFFFE', '#BFD7EA', '#0B3954', '#E0FF4F', '#FF6663', '#5CA4A9', '#F4F1BB'];
 var settings = { };
+var canvas_hidden = document.getElementById('canvas_hidden');
+// canvas_hidden.hidden = true;
+var canvas = document.getElementById('canvas');
+
+var noSmoothing = function(context) {
+    context.imageSmoothingEnabled = false;
+    context.mozImageSmoothingEnabled = false;
+    context.webkitImageSmoothingEnabled = false;
+    context.msImageSmoothingEnabled = false;
+};
 
 function readSettings(s) {
     s.species = bigInt(document.getElementById('speciesIn').value);
@@ -166,8 +173,8 @@ CA.prototype.buildPixelArray = function(colors) {
     for (let i = 0; i < this.ca.length; i++ ) {
         let row = this.ca[i];
         let shift = row.length - 2;
-        for (let j = 1; j < row.length - 2; j++ ) {
-            let color = colors[row[j]];
+        for (let j = 0; j < row.length - 2; j++ ) {
+            let color = colors[row[j+1]];
             data[i*shift*4 + j*4] =     parseInt(color.slice(1,3),16);
             data[i*shift*4 + j*4 + 1] = parseInt(color.slice(3,5),16);
             data[i*shift*4 + j*4 + 2] = parseInt(color.slice(5,7),16);
@@ -184,16 +191,6 @@ CA.prototype.draw = function() {
     let colors = readColorTable();
     let g = this.gridSize;
     const r = this.nbh;
-    let ctx = this.canvas.getContext('2d');
-    let ctx_hidden = this.canvas_hidden.getContext('2d');
-    ctx_hidden.imageSmoothingEnabled = false;
-    ctx_hidden.mozImageSmoothingEnabled = false;
-    ctx_hidden.webkitImageSmoothingEnabled = false;
-    ctx_hidden.msImageSmoothingEnabled = false;
-    ctx.imageSmoothingEnabled = false;
-    ctx.mozImageSmoothingEnabled = false;
-    ctx.webkitImageSmoothingEnabled = false;
-    ctx.msImageSmoothingEnabled = false;
     let pixel_data = this.buildPixelArray(colors);
     createColorTable();
 
@@ -201,6 +198,12 @@ CA.prototype.draw = function() {
     this.canvas_hidden.width =  this.xDimension;
     this.canvas.height = this.yDimension * g;
     this.canvas.width =  this.xDimension * g;
+
+    let ctx = this.canvas.getContext('2d');
+    let ctx_hidden = this.canvas_hidden.getContext('2d');
+
+    noSmoothing(ctx);
+    noSmoothing(ctx_hidden);
 
     let image = new ImageData(pixel_data, this.xDimension);
     ctx_hidden.putImageData(image, 0, 0);
@@ -226,10 +229,6 @@ CA.prototype.draw = function() {
 };
 
 (function setup() {
-    canvas_hidden = document.createElement('canvas');
-    canvas_hidden.hidden = true;
-    canvas = document.getElementById('canvas');
-    canvas_hidden.id = 'Canvas Hidden';
     readSettings(settings);
     ca = new CA(settings, canvas, canvas_hidden);
     createColorTable();
