@@ -4,6 +4,7 @@
 // Use JSHint to standardize code
 //var colorList = ['#eeeeee','#5e8ae2','#fed217','#222222','#123456','#871381','#8c1292']
 //var colorList = ['#ffffff', '#dddddd', '#bbbbbb', '#999999', '#777777', '#555555', '#333333', '#111111', '#000000'];
+// Optimize 'max' calculation so it doesn't have to recompute every time
 
 var ca;
 var colorList = ['#FEFFFE', '#BFD7EA', '#0B3954', '#E0FF4F', '#FF6663', '#5CA4A9', '#F4F1BB'];
@@ -26,6 +27,7 @@ function readSettings(s) {
     s.xDimension = parseInt(document.getElementById('xIn').value);
     s.yDimension = parseInt(document.getElementById('yIn').value);
     s.gridSize = parseInt(document.getElementById('sizeIn').value);
+    s.max = bigInt(document.getElementById('max').innertext);
     s.caType = document.querySelector('input[name="caType"]:checked').value;
     s.startCond = document.querySelector('input[name="startCond"]:checked').value;
 };
@@ -37,6 +39,7 @@ function writeSettings(s) {
     document.getElementById('xIn').value = s.xDimension;
     document.getElementById('yIn').value = s.yDimension;
     document.getElementById('sizeIn').value = s.gridSize;
+    document.getElementById('max').textContent = s.max.toString();
     // document.querySelector('input[name="caType"]:checked').value = s.caType
     // document.querySelector('input[name="startCond"]:checked').value = s.startCond
     // TODO
@@ -45,6 +48,7 @@ function writeSettings(s) {
 function CA(settings, canvas, canvas_hidden) {
     Object.setPrototypeOf(this.__proto__, settings);
     this.ruleSet = null;
+    this.undo = null;
     this.canvas = canvas;
     this.canvas_hidden = canvas_hidden;
     this.ca = null;
@@ -66,7 +70,7 @@ CA.prototype.generateRules = function() {
     let sp = this.species.toArray(c);
     let rules = [];
     if (this.caType == 'elementary') {
-        document.getElementById('max').innerHTML = Math.pow(c,(Math.pow(c,r))).toString();
+        this.max = bigInt(c).pow(c).pow(r).toString();
         while (sp.value.length < Math.pow(c,r)) {
             sp.value.unshift(0);
         };
@@ -76,8 +80,7 @@ CA.prototype.generateRules = function() {
             rules.push(sp.value[i]);
         }
     } else if (this.caType == 'totalistic') {
-        document.getElementById('max').innerHTML = Math.pow(c, ((c-1)*r+1));
-        //sp = sp.toString(c).padStart(r*(c-1)+1, '0').split('').reverse();
+        this.max = bigInt(c).pow((c-1)*r+1);
         while (sp.value.length < (r*(c-1)+1)) {
             sp.value.unshift(0);
         };
@@ -199,6 +202,7 @@ CA.prototype.draw = function() {
     this.ca = this.generateCA();
     let colors = readColorTable();
     let pixel_data = this.buildPixelArray(colors);
+    writeSettings(ca);
     createColorTable();
 
     this.canvas_hidden.height = this.yDimension;
@@ -251,7 +255,14 @@ function reSize(x,y,g) {
 };
 
 function changeSpecies(amount) {
-    ca.species = ca.species.add(amount);
+    if (amount === 'rand') {
+        ca.undo = ca.species;
+        ca.species = bigInt.randBetween(0, ca.max);
+    } else if (amount === 'undo') {
+        ca.species = ca.undo;
+    } else {
+        ca.species = ca.species.add(amount);
+    };
     writeSettings(ca);
     ca.draw();
 };
@@ -336,6 +347,12 @@ document.addEventListener('keydown', (keyCode) => {
         randomizeAllColors();
     } else if (keyCode.key === 'a') {
         reSize(1200,600,1);
+    } else if (keyCode.key === 's') {
+        reSize(1200,600,2);
+    } else if (keyCode.key === 'z') {
+        changeSpecies('rand');
+    } else if (keyCode.key === 'x') {
+        changeSpecies('undo');
     }
 });
 
