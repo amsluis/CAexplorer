@@ -229,9 +229,9 @@ CA.prototype.draw = function() {
     writeSettings(ca);
     createColorTable();
 
-    this.canvas_hidden.height = this.yDimension * 2 + 1;
+    this.canvas_hidden.height = this.yDimension * 2 - 1;
     this.canvas_hidden.width =  this.xDimension;
-    this.canvas.height = (this.yDimension*2 + 1) * this.gridSize;
+    this.canvas.height = (this.yDimension*2 - 1) * this.gridSize;
     this.canvas.width =  this.xDimension * this.gridSize;
     let halfx = Math.floor(this.xDimension / 2);
     let halfy = Math.floor(this.yDimension / 2);
@@ -243,7 +243,7 @@ CA.prototype.draw = function() {
     noSmoothing(ctx_hidden);
 
     let image = new ImageData(pixel_data, this.xDimension);
-    ctx_hidden.putImageData(image, 0, this.yDimension);
+    ctx_hidden.putImageData(image, 0, this.yDimension -1);
     ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
     ctx.drawImage(this.canvas_hidden, -this.canvas.width/2, -this.canvas.height/2, this.canvas.width, this.canvas.height);
     ctx.rotate(Math.PI / 2);
