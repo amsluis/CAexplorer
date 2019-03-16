@@ -196,19 +196,45 @@ CA.prototype.buildPixelArray = function(colors) {
     return data;
 }
 
+CA.prototype.transparentBackground = function(pixels) {
+    let x = ca.xDimension;
+    let y = ca.yDimension;
+    let center = Math.round(x/2);
+    for (let i = 0; i < y; i++) {
+        for (let j = 0; j < x; j++) {
+            if (i == 0) {
+                if (j == center - 1) {
+                } else {
+                    pixels[(j*4 + 3)] = 0x00;
+                };
+            } else if (j < center -1 - i) {
+                pixels[(i*x*4 + j*4 + 3)] = 0x00;
+            } else if (j > center + i - 2) {
+                pixels[(i*x*4 + j*4 + 3)] = 0x00;
+            };
+        };
+    };
+    return pixels;
+};
+
+
+
 
 CA.prototype.draw = function() {
     readSettings(ca);
     this.ca = this.generateCA();
     let colors = readColorTable();
     let pixel_data = this.buildPixelArray(colors);
+    pixel_data = this.transparentBackground(pixel_data);
     writeSettings(ca);
     createColorTable();
 
-    this.canvas_hidden.height = this.yDimension;
+    this.canvas_hidden.height = this.yDimension * 2 + 1;
     this.canvas_hidden.width =  this.xDimension;
-    this.canvas.height = this.yDimension * this.gridSize;
+    this.canvas.height = (this.yDimension*2 + 1) * this.gridSize;
     this.canvas.width =  this.xDimension * this.gridSize;
+    let halfx = Math.floor(this.xDimension / 2);
+    let halfy = Math.floor(this.yDimension / 2);
 
     let ctx = this.canvas.getContext('2d');
     let ctx_hidden = this.canvas_hidden.getContext('2d');
@@ -217,10 +243,15 @@ CA.prototype.draw = function() {
     noSmoothing(ctx_hidden);
 
     let image = new ImageData(pixel_data, this.xDimension);
-    ctx_hidden.putImageData(image, 0, 0);
-    ctx.drawImage(this.canvas_hidden, 0, 0, this.canvas.width, this.canvas.height);
-
-
+    ctx_hidden.putImageData(image, 0, this.yDimension);
+    ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
+    ctx.drawImage(this.canvas_hidden, -this.canvas.width/2, -this.canvas.height/2, this.canvas.width, this.canvas.height);
+    ctx.rotate(Math.PI / 2);
+    ctx.drawImage(this.canvas_hidden, -this.canvas.width/2, -this.canvas.height/2, this.canvas.width, this.canvas.height);
+    ctx.rotate(Math.PI / 2);
+    ctx.drawImage(this.canvas_hidden, -this.canvas.width/2, -this.canvas.height/2, this.canvas.width, this.canvas.height);
+    ctx.rotate(Math.PI / 2);
+    ctx.drawImage(this.canvas_hidden, -this.canvas.width/2, -this.canvas.height/2, this.canvas.width, this.canvas.height);
     /*
     canvas.width  = this.xDimension * g;
     canvas.height = this.yDimension * g;
