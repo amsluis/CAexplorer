@@ -377,9 +377,11 @@ document.addEventListener('keydown', (keyCode) => {
     } else if (keyCode.key === 'r') {
         randomizeAllColors();
     } else if (keyCode.key === 'a') {
-        reSize(1200,600,1);
+        reSize(1201,600,1);
     } else if (keyCode.key === 's') {
-        reSize(1200,600,2);
+        reSize(1201,600,2);
+    } else if (keyCode.key === 'd') {
+        reSize(201,500,2);
     } else if (keyCode.key === 'z') {
         changeSpecies('rand');
     } else if (keyCode.key === 'x') {
